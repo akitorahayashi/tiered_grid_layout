@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  TieredGridLayout
-//
-//  Created by akitorahayashi on 2025/04/12.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -23,9 +16,9 @@ struct ContentView: View {
         BlockModel(color: .indigo),
         BlockModel(color: .mint),
         BlockModel(color: .cyan),
-        BlockModel(color: .teal)
+        BlockModel(color: .teal),
     ]
-    
+
     var body: some View {
         ScrollView {
             TieredGridLayout {

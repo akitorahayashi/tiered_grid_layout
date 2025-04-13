@@ -1,11 +1,23 @@
+# プロジェクトのSwiftバージョン
 --swiftversion 5.8
+
+# インデントのスペース数
 --indent 4
+
+# case文をswitchと同じレベルにインデント
 --indentcase true
+
+# 末尾の空白を常に削除
 --trimwhitespace always
+
+# 1行の最大文字数
 --maxwidth 120
+
+# 長い引数リストは最初の引数の前で折り返す
 --wraparguments before-first
+
+# 長いコレクションリテラルは最初の要素の前で折り返す
 --wrapcollections before-first
---patternlet inline
---header strip
---disable redundantSelf
+
+# フォーマット対象外のディレクトリ
 --exclude .build,DerivedData,fastlane 

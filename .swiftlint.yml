@@ -1,15 +1,21 @@
+# ルールの詳細は https://realm.github.io/SwiftLint/rule-directory.html を参照
+
+# 解析対象のパス
 included:
   - TieredGridLayout
   - TieredGridLayoutTests
   - TieredGridLayoutUITests
+
+# 解析対象外のパス
 excluded:
   - .build
   - DerivedData
 
+# 無効化するルール
 disabled_rules:
-  - trailing_whitespace
-  - line_length
+  - trailing_comma # SwiftFormatで制御するため無効化
 
+# 有効化するルール (デフォルトでは無効)
 opt_in_rules:
   - empty_count
   - force_unwrapping
@@ -20,11 +26,27 @@ analyzer_rules:
   - unused_declaration
   - unused_import
 
+# --- 個別ルール設定 ---
+
+# 識別子 (変数名、定数名など) の命名規則
 identifier_name:
-  min_length: 2
+  min_length: 2 # 最小文字数 (warning)
   excluded:
     - id
     - x
     - y
 
+# 1行の最大長
+line_length:
+  warning: 120
+  ignores_comments: true
+  ignores_urls: true
+
+# switch文のcaseのアライメント
+switch_case_alignment:
+  indented_cases: true # caseをインデントするスタイルを許容
+
+# --- その他設定 ---
+
+# レポート形式 (Xcodeと統合)
 reporter: "xcode" 

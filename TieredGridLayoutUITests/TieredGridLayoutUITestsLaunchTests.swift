@@ -1,14 +1,6 @@
-//
-//  TieredGridLayoutUITestsLaunchTests.swift
-//  TieredGridLayoutUITests
-//
-//  Created by akitora.hayashi on 2025/04/13.
-//
-
 import XCTest
 
 final class TieredGridLayoutUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }

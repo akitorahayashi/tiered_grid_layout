@@ -31,14 +31,6 @@ jobs:
       - name: Format Swift files
         run: |
           mint run swiftformat .
-          
-      - name: Check for changes after formatting
-        run: |
-          echo "--- Git Status after SwiftFormat ---"
-          git status
-          echo "--- Git Diff after SwiftFormat ---"
-          git diff
-          echo "------------------------------------"
       
       - name: Run SwiftLint
         run: |

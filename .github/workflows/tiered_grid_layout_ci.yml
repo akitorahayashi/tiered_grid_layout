@@ -8,6 +8,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  copilot-review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+      
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Add PR Review Comment (Simulated)
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.payload.pull_request.number,
+              body: "👋 Copilotレビュー: コード全体をチェックします"
+            });
+
   setup:
     runs-on: macos-latest
     steps:
@@ -44,34 +65,14 @@ jobs:
       - name: Check for changes after linting (should be none)
         run: |
           git diff --exit-code || { echo "コードフォーマットの問題が見つかりました。ローカルで SwiftFormat と SwiftLint を実行し、変更をコミットしてください。"; exit 1; }
-          
-  copilot-review:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read
-      pull-requests: write
-      
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Add PR Review Comment (Simulated)
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.createComment({
-              ...context.repo,
-              issue_number: context.payload.pull_request.number,
-              body: "👋 Copilotレビュー: コード全体をチェックします"
-            });
             
-  build: 
+  build:
     runs-on: macos-latest
-    needs: setup # setupジョブに依存
-    
+    needs: lint-and-format # setup から lint-and-format に変更
+
     steps:
       # チェックアウトとMintのセットアップは 'setup' ジョブで行われます
+
       - name: Set Xcode version
         run: sudo xcode-select -s /Applications/Xcode.app
 

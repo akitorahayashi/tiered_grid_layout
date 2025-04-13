@@ -8,10 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-          
-  lint-and-format:
+  setup:
     runs-on: macos-latest
-    
     steps:
       - uses: actions/checkout@v3
       
@@ -22,7 +20,14 @@ jobs:
       - name: Install dependencies via Mint
         run: |
           mint bootstrap
-          
+
+  lint-and-format:
+    runs-on: macos-latest
+    needs: setup  # setupジョブに依存
+    
+    steps:
+      # チェックアウトとMintのセットアップは 'setup' ジョブで行われます
+      
       - name: Show Tool Versions
         run: |
           mint run swiftlint version
@@ -38,7 +43,7 @@ jobs:
           
       - name: Check for changes after linting (should be none)
         run: |
-          git diff --exit-code || { echo "Code formatting issues found. Please run SwiftFormat and SwiftLint locally and commit changes."; exit 1; }
+          git diff --exit-code || { echo "コードフォーマットの問題が見つかりました。ローカルで SwiftFormat と SwiftLint を実行し、変更をコミットしてください。"; exit 1; }
           
   copilot-review:
     runs-on: ubuntu-latest
@@ -61,28 +66,19 @@ jobs:
               body: "👋 Copilotレビュー: コード全体をチェックします"
             });
             
-  build:
+  build: 
     runs-on: macos-latest
-    needs: lint-and-format
+    needs: setup # setupジョブに依存
     
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Install Mint
-        run: |
-          brew install mint
-          
-      - name: Install dependencies via Mint
-        run: |
-          mint bootstrap
-          
-      - name: Generate Xcode project with XcodeGen
-        run: |
-          mint run xcodegen
-          
+      # チェックアウトとMintのセットアップは 'setup' ジョブで行われます
       - name: Set Xcode version
         run: sudo xcode-select -s /Applications/Xcode.app
-          
+
+      - name: Generate Xcode project
+        run: |
+          mint run xcodegen generate
+
       - name: Build Sample App
         run: |
           xcodebuild build -project TieredGridLayout.xcodeproj -scheme SampleApp -destination "platform=iOS Simulator,name=iPhone 15" | xcpretty

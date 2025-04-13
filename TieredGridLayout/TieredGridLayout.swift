@@ -8,7 +8,6 @@ public struct TieredGridLayout: Layout {
         subviews: Subviews,
         cache _: inout ()
     ) -> CGSize {
-        print("[TieredGridLayout] sizeThatFits proposal: \(proposal)") // デバッグ出力
         guard !subviews.isEmpty else { return .zero }
 
         // proposal.width が nil の場合のデフォルト値を 300 から 0 に変更
@@ -45,11 +44,8 @@ public struct TieredGridLayout: Layout {
             }
         }
 
-        print("[TieredGridLayout] sizeThatFits calculated totalHeight: \(totalHeight)") // デバッグ出力
-
         // 計算された高さと提案された高さの大きい方を返す
         let resultSize = CGSize(width: width, height: max(totalHeight, proposal.height ?? 0))
-        print("[TieredGridLayout] sizeThatFits returning size: \(resultSize)") // デバッグ出力
         return resultSize
     }
 
@@ -59,7 +55,6 @@ public struct TieredGridLayout: Layout {
         subviews: Subviews,
         cache _: inout ()
     ) {
-        print("[TieredGridLayout] placeSubviews bounds: \(bounds)") // デバッグ出力
         guard !subviews.isEmpty else { return }
 
         let positions = generatePositions(count: subviews.count, width: bounds.width)

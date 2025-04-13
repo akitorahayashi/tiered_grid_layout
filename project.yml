@@ -3,8 +3,6 @@ options:
   bundleIdPrefix: com.akitorahayashi.TieredGridLayout
 path: TieredGridLayout.xcodeproj
 targets:
-
-  # --- フレームワーク --- 
   TieredGridLayout:
     type: framework
     platform: iOS

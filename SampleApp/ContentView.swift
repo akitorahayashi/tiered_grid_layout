@@ -1,6 +1,16 @@
 import SwiftUI
 import TieredGridLayout
 
+struct BlockModel: Identifiable {
+    var id = UUID()
+    let color: Color
+
+    init(id: UUID = UUID(), color: Color) {
+        self.id = id
+        self.color = color
+    }
+}
+
 struct ContentView: View {
     // サンプル
     let sampleBlockModels: [BlockModel] = [

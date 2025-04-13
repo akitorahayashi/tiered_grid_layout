@@ -9,6 +9,7 @@ on:
 
 jobs:
   copilot-review:
+    name: Copilot Review
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     permissions:
@@ -30,6 +31,7 @@ jobs:
             });
 
   check-and-build:
+    name: Check and Build
     runs-on: macos-latest
     # このジョブは常に実行される (依存関係なし)
 

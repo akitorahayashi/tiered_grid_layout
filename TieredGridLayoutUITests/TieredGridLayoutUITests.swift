@@ -10,31 +10,75 @@ import XCTest
 final class TieredGridLayoutUITests: XCTestCase {
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
+        // テスト実行前の準備コードをここに記述します
+        
+        // UIテストでは、エラー発生時に即座に停止することが通常は最適です
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        
+        // UIテストでは、実行前に必要な初期状態（画面の向きなど）を設定することが重要です
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        // テスト実行後のクリーンアップコードをここに記述します
     }
 
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testグリッドレイアウトの存在確認() throws {
+        // テスト対象のアプリケーションを起動します
         let app = XCUIApplication()
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        // グリッドレイアウトが存在し、表示されていることを確認します
+        let gridLayout = app.otherElements["tieredGridLayout"]
+        XCTAssertTrue(gridLayout.exists, "TieredGridLayoutがビュー階層に存在する必要があります")
+        XCTAssertTrue(gridLayout.isHittable, "TieredGridLayoutが画面上で見えている必要があります")
+    }
+    
+    @MainActor
+    func testグリッドアイテムの操作() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // グリッドアイテムが存在するか確認します
+        let gridItems = app.otherElements.matching(identifier: "gridItem")
+        XCTAssertGreaterThan(gridItems.count, 0, "グリッドには少なくとも1つのアイテムが必要です")
+        
+        // グリッドアイテムとの対話をテストします
+        if !gridItems.isEmpty {
+            let firstItem = gridItems.element(boundBy: 0)
+            XCTAssertTrue(firstItem.exists, "最初のグリッドアイテムが存在する必要があります")
+            firstItem.tap()
+            
+            // タップ操作の結果を確認します（例：詳細ビューが表示される）
+            let detailView = app.otherElements["itemDetailView"]
+            XCTAssertTrue(detailView.waitForExistence(timeout: 2), "グリッドアイテムをタップすると詳細ビューが表示されるべきです")
+        }
+    }
+    
+    @MainActor
+    func testグリッドのスクロール機能() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        // レイアウトがスクロールビュー内にある場合のスクロールをテストします
+        let scrollView = app.scrollViews.firstMatch
+        if scrollView.exists {
+            // スクロールを確認するためにアイテムの初期位置を取得します
+            let beforeScroll = app.otherElements["gridItem"].firstMatch.frame
+            
+            // 下方向へのスクロールを実行します
+            scrollView.swipeUp()
+            
+            // スクロールが発生したことを確認します
+            let afterScroll = app.otherElements["gridItem"].firstMatch.frame
+            XCTAssertNotEqual(beforeScroll, afterScroll, "グリッドは垂直方向にスクロールできるはずです")
+        }
     }
 
     @MainActor
-    func testLaunchPerformance() throws {
+    func test起動パフォーマンス() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
+            // アプリケーションの起動にかかる時間を測定します
             measure(metrics: [XCTApplicationLaunchMetric()]) {
                 XCUIApplication().launch()
             }

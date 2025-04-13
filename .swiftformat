@@ -1,0 +1,11 @@
+--swiftversion 5.8
+--indent 4
+--indentcase true
+--trimwhitespace always
+--maxwidth 120
+--wraparguments before-first
+--wrapcollections before-first
+--patternlet inline
+--header strip
+--disable redundantSelf
+--exclude .build,DerivedData,fastlane 

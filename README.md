@@ -35,3 +35,14 @@ TieredGridLayout {
     }
 }
 ```
+
+## 開発環境
+
+```bash
+brew install mint
+mint bootstrap
+```
+
+これにより、プロジェクトで使用している以下のツールが自動的にインストールされます：
+- SwiftLint (0.52.3)
+- SwiftFormat (0.52.0)

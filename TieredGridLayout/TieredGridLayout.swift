@@ -59,16 +59,14 @@ struct TieredGridLayout: Layout {
         
         let positions = generatePositions(count: subviews.count, width: bounds.width)
         
-        for (index, subview) in subviews.enumerated() {
-            if index < positions.count {
-                let (point, size) = positions[index]
-                let adjustedPoint = CGPoint(x: bounds.minX + point.x, y: bounds.minY + point.y)
-                subview.place(
-                    at: adjustedPoint,
-                    anchor: .topLeading,
-                    proposal: ProposedViewSize(width: size.width, height: size.height)
-                )
-            }
+        for (index, subview) in subviews.enumerated() where index < positions.count {
+            let (point, size) = positions[index]
+            let adjustedPoint = CGPoint(x: bounds.minX + point.x, y: bounds.minY + point.y)
+            subview.place(
+                at: adjustedPoint,
+                anchor: .topLeading,
+                proposal: ProposedViewSize(width: size.width, height: size.height)
+            )
         }
     }
     
@@ -93,8 +91,8 @@ struct TieredGridLayout: Layout {
             
             // 上段 - 3つの小ブロック
             // 最大3つの小ブロックを配置
-            for i in 0..<min(3, blockCount - currentIndex) {
-                positions.append((CGPoint(x: unitSize * CGFloat(i), y: setOffset), smallSize))
+            for index in 0..<min(3, blockCount - currentIndex) {
+                positions.append((CGPoint(x: unitSize * CGFloat(index), y: setOffset), smallSize))
                 currentIndex += 1
             }
             
@@ -106,8 +104,8 @@ struct TieredGridLayout: Layout {
             
             // 中段 - 右に縦に2つの小ブロック
             // 最大2つの小ブロックを配置
-            for i in 0..<min(2, blockCount - currentIndex) {
-                positions.append((CGPoint(x: unitSize * 2, y: unitSize * (1 + CGFloat(i)) + setOffset), smallSize))
+            for index in 0..<min(2, blockCount - currentIndex) {
+                positions.append((CGPoint(x: unitSize * 2, y: unitSize * (1 + CGFloat(index)) + setOffset), smallSize))
                 currentIndex += 1
             }
             
@@ -115,8 +113,8 @@ struct TieredGridLayout: Layout {
             
             // 下段 - 3つの小ブロック
             // 最大3つの小ブロックを配置
-            for i in 0..<min(3, blockCount - currentIndex) {
-                positions.append((CGPoint(x: unitSize * CGFloat(i), y: unitSize * 3 + setOffset), smallSize))
+            for index in 0..<min(3, blockCount - currentIndex) {
+                positions.append((CGPoint(x: unitSize * CGFloat(index), y: unitSize * 3 + setOffset), smallSize))
                 currentIndex += 1
             }
             

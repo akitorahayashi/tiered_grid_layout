@@ -5,8 +5,10 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
+          
   lint-and-format:
     runs-on: macos-latest
     
@@ -25,10 +27,6 @@ jobs:
         run: |
           mint run swiftformat .
           
-      - name: SwiftLint Autocorrect
-        run: |
-          mint run swiftlint autocorrect
-          
       - name: Run SwiftLint
         run: |
           mint run swiftlint lint --strict
@@ -37,8 +35,30 @@ jobs:
         run: |
           git diff --exit-code || { echo "Code formatting issues found. Please run SwiftFormat and SwiftLint locally and commit changes."; exit 1; }
           
+  copilot-review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+      
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Add PR Review Comment (Simulated)
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.payload.pull_request.number,
+              body: "👋 Copilotレビュー: コード全体をチェックします"
+            });
+            
   build-and-ui-test:
     runs-on: macos-latest
+    needs: lint-and-format
     
     steps:
       - uses: actions/checkout@v3

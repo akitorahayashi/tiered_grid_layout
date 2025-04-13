@@ -29,10 +29,14 @@ jobs:
               body: "👋 Copilotレビュー: コード全体をチェックします"
             });
 
-  setup:
+  check-and-build:
     runs-on: macos-latest
+    # このジョブは常に実行される (依存関係なし)
+
     steps:
-      - uses: actions/checkout@v3
+      # --- セットアップ ---
+      - name: Checkout code
+        uses: actions/checkout@v3
       
       - name: Install Mint
         run: |
@@ -42,13 +46,7 @@ jobs:
         run: |
           mint bootstrap
 
-  lint-and-format:
-    runs-on: macos-latest
-    needs: setup  # setupジョブに依存
-    
-    steps:
-      # チェックアウトとMintのセットアップは 'setup' ジョブで行われます
-      
+      # --- Lint & Format ---
       - name: Show Tool Versions
         run: |
           mint run swiftlint version
@@ -66,13 +64,7 @@ jobs:
         run: |
           git diff --exit-code || { echo "コードフォーマットの問題が見つかりました。ローカルで SwiftFormat と SwiftLint を実行し、変更をコミットしてください。"; exit 1; }
             
-  build:
-    runs-on: macos-latest
-    needs: lint-and-format # setup から lint-and-format に変更
-
-    steps:
-      # チェックアウトとMintのセットアップは 'setup' ジョブで行われます
-
+      # --- Build ---
       - name: Set Xcode version
         run: sudo xcode-select -s /Applications/Xcode.app
 

@@ -40,6 +40,9 @@ Pods/
 # Carthage
 Carthage/Build/
 
+# XcodeGen generated project
+*.xcodeproj
+
 # Accio dependency management
 Dependencies/
 .accio/ 

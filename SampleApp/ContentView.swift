@@ -1,4 +1,5 @@
 import SwiftUI
+import TieredGridLayout
 
 struct ContentView: View {
     // サンプル
@@ -22,12 +23,16 @@ struct ContentView: View {
     var body: some View {
         ScrollView {
             TieredGridLayout {
-                ForEach(sampleBlockModels) { block in
+                ForEach(Array(sampleBlockModels.enumerated()), id: \.element.id) { index, block in
                     Rectangle()
                         .fill(block.color)
-                        .stroke(Color.white, lineWidth: 2)
+                        .border(Color.white, width: 2)
                 }
             }
         }
     }
+}
+
+#Preview {
+    ContentView()
 }

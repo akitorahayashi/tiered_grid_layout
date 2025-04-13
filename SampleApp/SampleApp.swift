@@ -1,10 +1,10 @@
 import SwiftUI
 
 @main
-struct TieredGridLayoutApp: App {
+struct SampleApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
     }
-}
+} 

@@ -1,14 +1,20 @@
 import SwiftUI
 
-struct TieredGridLayout: Layout {
-    func sizeThatFits(
+public struct TieredGridLayout: Layout {
+    public init() {}
+
+    public func sizeThatFits(
         proposal: ProposedViewSize,
         subviews: Subviews,
         cache _: inout ()
     ) -> CGSize {
+        print("[TieredGridLayout] sizeThatFits proposal: \(proposal)") // デバッグ出力
         guard !subviews.isEmpty else { return .zero }
 
-        let width = proposal.width ?? 300
+        // proposal.width が nil の場合のデフォルト値を 300 から 0 に変更
+        let width = proposal.width ?? 0
+        guard width > 0 else { return .zero } // 幅が 0 以下ならサイズ 0 を返す
+
         let unitSize = width / 3
 
         // 完全な10ブロックのセット数を計算
@@ -39,15 +45,21 @@ struct TieredGridLayout: Layout {
             }
         }
 
-        return CGSize(width: width, height: totalHeight)
+        print("[TieredGridLayout] sizeThatFits calculated totalHeight: \(totalHeight)") // デバッグ出力
+
+        // 計算された高さと提案された高さの大きい方を返す
+        let resultSize = CGSize(width: width, height: max(totalHeight, proposal.height ?? 0))
+        print("[TieredGridLayout] sizeThatFits returning size: \(resultSize)") // デバッグ出力
+        return resultSize
     }
 
-    func placeSubviews(
+    public func placeSubviews(
         in bounds: CGRect,
         proposal _: ProposedViewSize,
         subviews: Subviews,
         cache _: inout ()
     ) {
+        print("[TieredGridLayout] placeSubviews bounds: \(bounds)") // デバッグ出力
         guard !subviews.isEmpty else { return }
 
         let positions = generatePositions(count: subviews.count, width: bounds.width)

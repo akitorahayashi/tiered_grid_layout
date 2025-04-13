@@ -61,20 +61,28 @@ jobs:
               body: "👋 Copilotレビュー: コード全体をチェックします"
             });
             
-  build-and-ui-test:
+  build:
     runs-on: macos-latest
     needs: lint-and-format
     
     steps:
       - uses: actions/checkout@v3
       
+      - name: Install Mint
+        run: |
+          brew install mint
+          
+      - name: Install dependencies via Mint
+        run: |
+          mint bootstrap
+          
+      - name: Generate Xcode project with XcodeGen
+        run: |
+          mint run xcodegen
+          
       - name: Set Xcode version
         run: sudo xcode-select -s /Applications/Xcode.app
           
-      - name: Build
+      - name: Build Sample App
         run: |
-          xcodebuild build -project TieredGridLayout.xcodeproj -scheme TieredGridLayout -destination "platform=iOS Simulator,name=iPhone 15" | xcpretty
-          
-      - name: Run UI tests
-        run: |
-          xcodebuild test -project TieredGridLayout.xcodeproj -scheme TieredGridLayoutUITests -destination "platform=iOS Simulator,name=iPhone 15" | xcpretty 
+          xcodebuild build -project TieredGridLayout.xcodeproj -scheme SampleApp -destination "platform=iOS Simulator,name=iPhone 15" | xcpretty

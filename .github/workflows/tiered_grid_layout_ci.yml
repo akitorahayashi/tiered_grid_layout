@@ -23,15 +23,28 @@ jobs:
         run: |
           mint bootstrap
           
+      - name: Show Tool Versions
+        run: |
+          mint run swiftlint version
+          mint run swiftformat --version
+          
       - name: Format Swift files
         run: |
           mint run swiftformat .
           
+      - name: Check for changes after formatting
+        run: |
+          echo "--- Git Status after SwiftFormat ---"
+          git status
+          echo "--- Git Diff after SwiftFormat ---"
+          git diff
+          echo "------------------------------------"
+      
       - name: Run SwiftLint
         run: |
           mint run swiftlint lint --strict
           
-      - name: Check for changes after formatting
+      - name: Check for changes after linting (should be none)
         run: |
           git diff --exit-code || { echo "Code formatting issues found. Please run SwiftFormat and SwiftLint locally and commit changes."; exit 1; }
           

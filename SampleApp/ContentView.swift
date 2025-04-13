@@ -23,7 +23,7 @@ struct ContentView: View {
     var body: some View {
         ScrollView {
             TieredGridLayout {
-                ForEach(Array(sampleBlockModels.enumerated()), id: \.element.id) { index, block in
+                ForEach(Array(sampleBlockModels.enumerated()), id: \.element.id) { _, block in
                     Rectangle()
                         .fill(block.color)
                         .border(Color.white, width: 2)

@@ -30,8 +30,9 @@ TieredGridLayoutはSwiftUIの`Layout`プロトコルを実装しています。�
 
 ```swift
 TieredGridLayout {
-    ForEach(items) { item in
     // ここにサブビューを追加
+    ForEach(items) { item in
+        ...
     }
 }
 ```

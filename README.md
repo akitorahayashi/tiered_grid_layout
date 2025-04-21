@@ -1,8 +1,6 @@
 # TieredGridLayout
 
-`TieredGridLayout` は、SwiftUIの`Layout`プロトコルを使用して実装されたカスタムレイアウトコンポーネント（フレームワーク）です
-
-このレイアウトは、複数の要素を階層的なグリッドパターンで配置します。
+`TieredGridLayout` は、SwiftUIの`Layout`プロトコルを使用して実装されたカスタムレイアウトコンポーネントです
 
 `SampleApp` は `TieredGridLayout` フレームワークの使用方法を示すサンプルアプリケーションです
 
@@ -34,8 +32,8 @@ TieredGridLayoutはSwiftUIの`Layout`プロトコルを実装しています。�
 
 ### Swift Package Manager
 
-1. Xcode でプロジェクトを開き、「File」>「Add Packages...」を選択します。
-2. 検索バーにこのリポジトリの URL (`https://github.com/akitorahayashi/tiered_grid_layout` ) を貼り付けます。
+1. Xcode でプロジェクトを開き、「File」>「Add Packages...」を選択します
+2. 検索バーにこのリポジトリの URL (`https://github.com/akitorahayashi/tiered-grid-layout` ) を貼り付けます
 3. 「Dependency Rule」を選択し（通常は「Up to Next Major Version」）、バージョンを指定します。
 4. 「Add Package」をクリックします。
 5. ターゲットの「Frameworks, Libraries, and Embedded Content」セクションに `TieredGridLayout` が追加されていることを確認します。
@@ -91,7 +89,7 @@ mint run xcodegen
 ```swift
 struct ContentView: View {
     var body: some View {
-        TieredGridLayout(alignment: .center) { // .center 配置を指定
+        TieredGridLayout(alignment: .center) {
             ForEach(0..<10) { index in
                 Color.blue
                     .overlay(Text("\(index)"))
@@ -101,4 +99,4 @@ struct ContentView: View {
 }
 ```
 
-デフォルトの配置は `.topLeading` です。
+デフォルトの配置は `.center` です。

@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 5.9
 // The swift-tools-version は、このパッケージのビルドに必要な Swift の最小バージョンを宣言
 
 import PackageDescription

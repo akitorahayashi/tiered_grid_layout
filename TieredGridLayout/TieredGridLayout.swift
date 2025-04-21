@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct TieredGridLayout: Layout {
     private let alignment: Alignment
-    public init(alignment: Alignment = .topLeading) { self.alignment = alignment }
+    public init(alignment: Alignment = .center) { self.alignment = alignment }
 
     // MARK: - Layout sizing
 

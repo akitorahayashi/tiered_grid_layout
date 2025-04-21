@@ -8,27 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  copilot-review:
-    name: Copilot Review
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read
-      pull-requests: write
-      
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Add PR Review Comment (Simulated)
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.createComment({
-              ...context.repo,
-              issue_number: context.payload.pull_request.number,
-              body: "👋 Copilotレビュー: コード全体をチェックします"
-            });
 
   check-and-build:
     name: Check and Build

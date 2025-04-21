@@ -1,8 +1,10 @@
 # TieredGridLayout
 
-`TieredGridLayout` は、SwiftUIの`Layout`プロトコルを使用して実装されたカスタムレイアウトコンポーネント（フレームワーク）です。このレイアウトは、複数の要素を階層的なグリッドパターンで配置します。
+`TieredGridLayout` は、SwiftUIの`Layout`プロトコルを使用して実装されたカスタムレイアウトコンポーネント（フレームワーク）です
 
-`SampleApp` は `TieredGridLayout` フレームワークの使用方法を示すサンプルアプリケーションです。
+このレイアウトは、複数の要素を階層的なグリッドパターンで配置します。
+
+`SampleApp` は `TieredGridLayout` フレームワークの使用方法を示すサンプルアプリケーションです
 
 ## 特徴
 
@@ -14,7 +16,7 @@
 
 ### Layoutプロトコル
 
-TieredGridLayoutはSwiftUIの`Layout`プロトコルを実装しています。このプロトコルは以下の2つの必須メソッドを要求します：
+TieredGridLayoutはSwiftUIの`Layout`プロトコルを実装しています。このプロトコルは以下の2つの必須メソッドを要求します
 
 1. **sizeThatFits** - レイアウトの全体サイズを計算します
 2. **placeSubviews** - サブビューを配置します
@@ -30,28 +32,38 @@ TieredGridLayoutはSwiftUIの`Layout`プロトコルを実装しています。�
 
 ## 使用方法
 
+### Swift Package Manager
+
+1. Xcode でプロジェクトを開き、「File」>「Add Packages...」を選択します。
+2. 検索バーにこのリポジトリの URL (`https://github.com/akitorahayashi/tiered_grid_layout` ) を貼り付けます。
+3. 「Dependency Rule」を選択し（通常は「Up to Next Major Version」）、バージョンを指定します。
+4. 「Add Package」をクリックします。
+5. ターゲットの「Frameworks, Libraries, and Embedded Content」セクションに `TieredGridLayout` が追加されていることを確認します。
+
 ```swift
+import SwiftUI
+import TieredGridLayout
+
+// VStackやHStackのようにTieredGridLayoutを使用して子ビューを配置します
 TieredGridLayout {
-    // ここにサブビューを追加
-    ForEach(items) { item in
-        ...
-    }
+    // ここに子ビューを直接追加します
+    Rectangle().fill(.blue)
+    Rectangle().fill(.red)
+    Rectangle().fill(.green)
+    // さらにビューを追加...
 }
-```
 
 ## プロジェクト構成
 
 - `TieredGridLayout/`: カスタムレイアウトを提供するフレームワークのソースコード
 - `SampleApp/`: `TieredGridLayout` を使用するサンプルアプリケーションのソースコード
-- `TieredGridLayoutUITests/`: フレームワークのUIテスト
-- `project.yml`: XcodeGen のプロジェクト定義ファイル
+- `project.yml`: XcodeGen で生成するプロジェクトを定義するファイル
 
 ## 開発環境
 
 ```bash
 brew install mint
 mint bootstrap
-mint run xcodegen # .xcodeproj を生成
 ```
 
 これにより、プロジェクトで使用している以下のツールが自動的にインストールされます：
@@ -59,9 +71,34 @@ mint run xcodegen # .xcodeproj を生成
 - SwiftFormat (0.52.0)
 - XcodeGen (2.40.1)
 
+xcodeproj を生成
+```bash
+mint run xcodegen
+```
 ## サンプルアプリケーションの実行
 
 1. 上記の「開発環境」セクションの手順に従って、必要なツールをインストールし、プロジェクトファイル (`.xcodeproj`) を生成します。
 2. 生成された `TieredGridLayout.xcodeproj` ファイルを Xcode で開きます。
 3. Xcode のスキームセレクタ（ツールバー中央付近）で `SampleApp` を選択します。
-4. ビルドして実行（Cmd+R）します。
+4. 実行（Cmd+R）します。
+
+## カスタマイズ
+
+### Alignment
+
+初期化時に `alignment` パラメータを使用して、グリッドセル内のビューの配置を指定できます。このパラメータは、標準の SwiftUI `Alignment` 値（例：`.center`、`.topLeading`、`.bottomTrailing`）を受け入れます。
+
+```swift
+struct ContentView: View {
+    var body: some View {
+        TieredGridLayout(alignment: .center) { // .center 配置を指定
+            ForEach(0..<10) { index in
+                Color.blue
+                    .overlay(Text("\(index)"))
+            }
+        }
+    }
+}
+```
+
+デフォルトの配置は `.topLeading` です。

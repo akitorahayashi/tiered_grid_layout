@@ -1,8 +1,11 @@
 import SwiftUI
 
 public struct TieredGridLayout: Layout {
-    public init() {}
-
+    private let alignment: Alignment
+    public init(alignment: Alignment = .topLeading) { self.alignment = alignment }
+    
+    
+    // MARK: - Layout sizing
     public func sizeThatFits(
         proposal: ProposedViewSize,
         subviews: Subviews,
@@ -10,43 +13,23 @@ public struct TieredGridLayout: Layout {
     ) -> CGSize {
         guard !subviews.isEmpty else { return .zero }
 
-        // proposal.width が nil の場合のデフォルト値を 300 から 0 に変更
         let width = proposal.width ?? 0
-        guard width > 0 else { return .zero } // 幅が 0 以下ならサイズ 0 を返す
+        guard width > 0 else { return .zero }
 
-        let unitSize = width / 3
-
-        // 完全な10ブロックのセット数を計算
+        let unit = width / 3
         let completeSets = subviews.count / 10
+        var height = CGFloat(completeSets) * (unit * 7)
 
-        // 完全なセットの高さを計算
-        var totalHeight = CGFloat(completeSets) * (unitSize * 7)
-
-        // 最後の不完全なセットの残りのブロックの高さを計算
-        let remainingBlocks = subviews.count % 10
-        if remainingBlocks > 0 {
-            switch remainingBlocks {
-                case 1 ... 3:
-                    // 上段のみが埋まっている場合
-                    totalHeight += unitSize
-                case 4 ... 6:
-                    // 上段と中段の一部が埋まっている場合
-                    totalHeight += unitSize * 3
-                case 7 ... 9:
-                    // 上段、中段、下段が埋まっている場合
-                    totalHeight += unitSize * 4
-                case 10:
-                    // 完全なセット (remainingBlocks が 0 の場合はこの if に入らないため、ここは 10 のみ)
-                    totalHeight += unitSize * 7
-                default:
-                    // ここには到達しない想定 (remainingBlocks は 1-10 の範囲)
-                    break
-            }
+        switch subviews.count % 10 {
+        case 1...3:  height += unit           // 1行分
+        case 4...6:  height += unit * 3       // 3行分
+        case 7...9:  height += unit * 4       // 4行分
+        case 0:      break                    // ちょうど 10 の倍数
+        default:     height += unit * 7       // 理論上到達しない
         }
 
-        // 計算された高さと提案された高さの大きい方を返す
-        let resultSize = CGSize(width: width, height: max(totalHeight, proposal.height ?? 0))
-        return resultSize
+        return CGSize(width: width,
+                      height: max(height, proposal.height ?? 0))
     }
 
     public func placeSubviews(
@@ -58,78 +41,87 @@ public struct TieredGridLayout: Layout {
         guard !subviews.isEmpty else { return }
 
         let positions = generatePositions(count: subviews.count, width: bounds.width)
+        let anchor    = unitPoint(for: alignment)
 
         for (index, subview) in subviews.enumerated() where index < positions.count {
-            let (point, size) = positions[index]
-            let adjustedPoint = CGPoint(x: bounds.minX + point.x, y: bounds.minY + point.y)
+            let (pt, size) = positions[index]
+
+            // anchor が .center なら (w/2, h/2) だけ右下へオフセット
+            let offset = CGPoint(x: size.width  * anchor.x,
+                                 y: size.height * anchor.y)
+
             subview.place(
-                at: adjustedPoint,
-                anchor: .topLeading,
+                at: CGPoint(x: bounds.minX + pt.x + offset.x,
+                            y: bounds.minY + pt.y + offset.y),
+                anchor: anchor,
                 proposal: ProposedViewSize(width: size.width, height: size.height)
             )
         }
     }
 
-    private func generatePositions(count: Int, width: CGFloat) -> [(CGPoint, CGSize)] {
-        var positions: [(CGPoint, CGSize)] = []
-
-        let unitSize = width / 3
-
-        // サイズを計算
-        let smallSize = CGSize(width: unitSize, height: unitSize)
-        let mediumSize = CGSize(width: unitSize * 2, height: unitSize * 2)
-        let largeSize = CGSize(width: unitSize * 3, height: unitSize * 3)
-
-        // 10ブロックのグループ単位で処理
-        let blockCount = count
-        var currentIndex = 0
-
-        while currentIndex < blockCount {
-            let setBaseY = (currentIndex / 10) * Int(unitSize * 7) // 1セットあたり7ユニットの高さ
-            let remainingBlocks = min(10, blockCount - currentIndex)
-            let setOffset = CGFloat(setBaseY)
-
-            // 上段 - 3つの小ブロック
-            // 最大3つの小ブロックを配置
-            for index in 0 ..< min(3, blockCount - currentIndex) {
-                positions.append((CGPoint(x: unitSize * CGFloat(index), y: setOffset), smallSize))
-                currentIndex += 1
-            }
-
-            if currentIndex >= blockCount { break }
-
-            // 中段 - 左に1つの中ブロック(2x2)
-            positions.append((CGPoint(x: 0, y: unitSize + setOffset), mediumSize))
-            currentIndex += 1
-
-            // 中段 - 右に縦に2つの小ブロック
-            // 最大2つの小ブロックを配置
-            for index in 0 ..< min(2, blockCount - currentIndex) {
-                positions.append((CGPoint(x: unitSize * 2, y: unitSize * (1 + CGFloat(index)) + setOffset), smallSize))
-                currentIndex += 1
-            }
-
-            if currentIndex >= blockCount { break }
-
-            // 下段 - 3つの小ブロック
-            // 最大3つの小ブロックを配置
-            for index in 0 ..< min(3, blockCount - currentIndex) {
-                positions.append((CGPoint(x: unitSize * CGFloat(index), y: unitSize * 3 + setOffset), smallSize))
-                currentIndex += 1
-            }
-
-            if currentIndex >= blockCount { break }
-
-            // 最下段 - 1つの大ブロック(3x3)
-            positions.append((CGPoint(x: 0, y: unitSize * 4 + setOffset), largeSize))
-            currentIndex += 1
-
-            // 10個のフルセットに満たない場合は継続する必要なし
-            if remainingBlocks < 10 {
-                break
-            }
+    // Alignment → UnitPoint 変換
+    private func unitPoint(for alignment: Alignment) -> UnitPoint {
+        switch alignment {
+        case .topLeading:     return .topLeading
+        case .top:            return .top
+        case .topTrailing:    return .topTrailing
+        case .leading:        return .leading
+        case .center:         return .center
+        case .trailing:       return .trailing
+        case .bottomLeading:  return .bottomLeading
+        case .bottom:         return .bottom
+        case .bottomTrailing: return .bottomTrailing
+        default:              return .topLeading
         }
+    }
 
+
+    private func generatePositions(count: Int, width: CGFloat)
+        -> [(CGPoint, CGSize)]
+    {
+        var positions: [(CGPoint, CGSize)] = []
+        let unit = width / 3
+
+        let small  = CGSize(width: unit,       height: unit)
+        let medium = CGSize(width: unit * 2,   height: unit * 2)
+        let large  = CGSize(width: unit * 3,   height: unit * 3)
+
+        var idx = 0
+        while idx < count {
+            let setY = CGFloat(idx / 10) * unit * 7   // ← セット単位で固定
+
+            // ① 上段（最大 3）
+            for col in 0..<min(3, count - idx) {
+                positions.append((CGPoint(x: unit * CGFloat(col), y: setY), small))
+                idx += 1
+            }
+            if idx >= count { break }
+
+            // ② 中段左（2×2）
+            positions.append((CGPoint(x: 0, y: unit + setY), medium))
+            idx += 1
+            if idx >= count { break }
+
+            // ③ 中段右（縦2）
+            for row in 0..<min(2, count - idx) {
+                positions.append((CGPoint(x: unit * 2,
+                                           y: unit * (1 + CGFloat(row)) + setY), small))
+                idx += 1
+            }
+            if idx >= count { break }
+
+            // ④ 下段（最大 3）
+            for col in 0..<min(3, count - idx) {
+                positions.append((CGPoint(x: unit * CGFloat(col),
+                                           y: unit * 3 + setY), small))
+                idx += 1
+            }
+            if idx >= count { break }
+
+            // ⑤ 最下段（3×3）
+            positions.append((CGPoint(x: 0, y: unit * 4 + setY), large))
+            idx += 1
+        }
         return positions
     }
 }

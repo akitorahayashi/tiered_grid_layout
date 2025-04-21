@@ -17,8 +17,7 @@ let package = Package(
     targets: [
         .target(
             name: "TieredGridLayout",
-            path: ".", // ソースファイルにカレントディレクトリを使用
-            exclude: ["Info.plist"]
+            path: "TieredGridLayout" // ソースディレクトリを明示的に指定
         ),
         // 後でテストを追加する場合は、ここで定義
         // .testTarget(

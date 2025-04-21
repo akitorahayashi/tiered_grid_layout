@@ -20,4 +20,4 @@
 --wrapcollections before-first
 
 # フォーマット対象外のディレクトリ
---exclude .build,DerivedData,fastlane 
+--exclude .build,DerivedData

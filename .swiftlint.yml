@@ -14,6 +14,7 @@ excluded:
 # 無効化するルール
 disabled_rules:
   - trailing_comma # SwiftFormatで制御するため無効化
+  - opening_brace # swiftformat と競合するため無効化
 
 # 有効化するルール (デフォルトでは無効)
 opt_in_rules:
@@ -49,4 +50,4 @@ switch_case_alignment:
 # --- その他設定 ---
 
 # レポート形式 (Xcodeと統合)
-reporter: "xcode" 
+reporter: "xcode"

@@ -4,7 +4,7 @@ options:
 path: TieredGridLayout.xcodeproj
 packages:
   TieredGridLayout:
-    path: ./TieredGridLayout
+    path: ./
 targets:
   SampleApp:
     type: application

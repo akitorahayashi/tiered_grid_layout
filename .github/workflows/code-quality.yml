@@ -16,6 +16,9 @@ jobs:
       result: ${{ steps.result.outputs.status }}
     steps:
     - uses: actions/checkout@v4
+
+    - name: Install Mint
+      run: brew install mint
     
     - name: Run SwiftFormat
       run: mint run swiftformat .

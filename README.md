@@ -50,6 +50,26 @@ TieredGridLayout {
     Rectangle().fill(.green)
     // さらにビューを追加...
 }
+```
+
+### アスペクト比の扱い
+
+`TieredGridLayout` は、利用可能な幅を3分割した単位に基づいて位置とサイズを計算し、サブビューには常に1:1 のアスペクト比のスペースを提案します。
+
+SwiftUI の `Layout` プロトコルの設計上、レイアウトコンテナはスペースを提供する役割を担い、そのスペース内でコンテンツがどのように表示されるか（アスペクト比を保つか、引き伸ばすか、切り取るかなど）は、サブビュー自身とそのモディファイア（例: `.resizable()`, `.scaledToFit()`, `.scaledToFill().clipped()`）が決定します
+
+したがって、1:1 ではないコンテンツ（写真など）を `TieredGridLayout` に配置する場合は、意図した表示になるように、各サブビューに適切なモディファイアを適用してください
+
+```swift
+TieredGridLayout {
+    ForEach(myImageItems) { item in
+        Image(item.name)
+            .resizable()
+            .scaledToFill()
+            .clipped()
+    }
+}
+```
 
 ## プロジェクト構成
 

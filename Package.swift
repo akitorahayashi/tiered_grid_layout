@@ -20,10 +20,6 @@ let package = Package(
             path: "TieredGridLayout",
             exclude: [
                 "Info.plist",
-                "SampleApp",
-                "Mintfile",
-                "project.yml",
-                "README.md",
             ]
         ),
         // 後でテストを追加する場合は、ここで定義

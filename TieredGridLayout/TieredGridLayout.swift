@@ -4,6 +4,35 @@ public struct TieredGridLayout: Layout {
     private let alignment: Alignment
     public init(alignment: Alignment = .center) { self.alignment = alignment }
 
+    // MARK: - Layout Pattern Definition
+
+    private struct RelativeLayoutItem {
+        let x: CGFloat // x offset in unit multiples
+        let y: CGFloat // y offset in unit multiples
+        let width: CGFloat // width in unit multiples
+        let height: CGFloat // height in unit multiples
+    }
+
+    private static let layoutPattern: [RelativeLayoutItem] = [
+        // ① 上段 (3 small items)
+        RelativeLayoutItem(x: 0, y: 0, width: 1, height: 1), // Item 0
+        RelativeLayoutItem(x: 1, y: 0, width: 1, height: 1), // Item 1
+        RelativeLayoutItem(x: 2, y: 0, width: 1, height: 1), // Item 2
+        // ② 中段左 (1 medium item)
+        RelativeLayoutItem(x: 0, y: 1, width: 2, height: 2), // Item 3
+        // ③ 中段右 (2 small items)
+        RelativeLayoutItem(x: 2, y: 1, width: 1, height: 1), // Item 4
+        RelativeLayoutItem(x: 2, y: 2, width: 1, height: 1), // Item 5
+        // ④ 下段 (3 small items)
+        RelativeLayoutItem(x: 0, y: 3, width: 1, height: 1), // Item 6
+        RelativeLayoutItem(x: 1, y: 3, width: 1, height: 1), // Item 7
+        RelativeLayoutItem(x: 2, y: 3, width: 1, height: 1), // Item 8
+        // ⑤ 最下段 (1 large item)
+        RelativeLayoutItem(x: 0, y: 4, width: 3, height: 3), // Item 9
+    ]
+
+    private static let setHeightInUnits: CGFloat = 7 // Pattern height in units
+
     // MARK: - Layout sizing
 
     public func sizeThatFits(
@@ -13,24 +42,28 @@ public struct TieredGridLayout: Layout {
     ) -> CGSize {
         guard !subviews.isEmpty else { return .zero }
 
-        let width = proposal.width ?? 0
+        let width: CGFloat = proposal.width ?? 0
         guard width > 0 else { return .zero }
 
-        let unit = width / 3
-        let completeSets = subviews.count / 10
-        var height = CGFloat(completeSets) * (unit * 7)
+        let unit: CGFloat = width / 3
+        let count: Int = subviews.count
+        let completeSets: Int = count / 10
+        let remainingItems: Int = count % 10
+        var height = CGFloat(completeSets) * unit * Self.setHeightInUnits
 
-        switch subviews.count % 10 {
-            case 1 ... 3: height += unit // 1行分
-            case 4 ... 6: height += unit * 3 // 3行分
-            case 7 ... 9: height += unit * 4 // 4行分
-            case 0: break // ちょうど 10 の倍数
-            default: height += unit * 7 // 理論上到達しない
+        // Calculate height for remaining items
+        if remainingItems > 0 {
+            // Find the maximum y + height of the remaining items in the pattern
+            let maxRelativeYPlusHeight = Self.layoutPattern[..<remainingItems]
+                .map { $0.y + $0.height }
+                .max() ?? 0
+            height += maxRelativeYPlusHeight * unit
         }
 
+        let proposedHeight: CGFloat = proposal.height ?? 0
         return CGSize(
             width: width,
-            height: max(height, proposal.height ?? 0)
+            height: max(height, proposedHeight)
         )
     }
 
@@ -42,23 +75,23 @@ public struct TieredGridLayout: Layout {
     ) {
         guard !subviews.isEmpty else { return }
 
-        let positions = generatePositions(count: subviews.count, width: bounds.width)
-        let anchor = unitPoint(for: alignment)
+        let width: CGFloat = bounds.width
+        let positions: [(CGPoint, CGSize)] = generatePositions(count: subviews.count, width: width)
+        let anchor: UnitPoint = unitPoint(for: alignment)
 
         for (index, subview) in subviews.enumerated() where index < positions.count {
-            let (pt, size) = positions[index]
+            let (pt, size): (CGPoint, CGSize) = positions[index]
 
             // anchor が .center なら (w/2, h/2) だけ右下へオフセット
-            let offset = CGPoint(
-                x: size.width * anchor.x,
-                y: size.height * anchor.y
-            )
+            let offsetX: CGFloat = size.width * anchor.x
+            let offsetY: CGFloat = size.height * anchor.y
+            let offset = CGPoint(x: offsetX, y: offsetY)
+
+            let placeX: CGFloat = bounds.minX + pt.x + offset.x
+            let placeY: CGFloat = bounds.minY + pt.y + offset.y
 
             subview.place(
-                at: CGPoint(
-                    x: bounds.minX + pt.x + offset.x,
-                    y: bounds.minY + pt.y + offset.y
-                ),
+                at: CGPoint(x: placeX, y: placeY),
                 anchor: anchor,
                 proposal: ProposedViewSize(width: size.width, height: size.height)
             )
@@ -66,7 +99,7 @@ public struct TieredGridLayout: Layout {
     }
 
     // Alignment → UnitPoint 変換
-    private func unitPoint(for alignment: Alignment) -> UnitPoint {
+    func unitPoint(for alignment: Alignment) -> UnitPoint {
         switch alignment {
             case .topLeading: return .topLeading
             case .top: return .top
@@ -77,60 +110,39 @@ public struct TieredGridLayout: Layout {
             case .bottomLeading: return .bottomLeading
             case .bottom: return .bottom
             case .bottomTrailing: return .bottomTrailing
-            default: return .topLeading
+            default: return .topLeading // デフォルトは .topLeading に
         }
     }
 
-    private func generatePositions(count: Int, width: CGFloat)
+    func generatePositions(count: Int, width: CGFloat)
         -> [(CGPoint, CGSize)]
     {
         var positions: [(CGPoint, CGSize)] = []
-        let unit = width / 3
+        // swiftlint:disable:next empty_count
+        guard count > 0, width > 0 else { return positions }
 
-        let small = CGSize(width: unit, height: unit)
-        let medium = CGSize(width: unit * 2, height: unit * 2)
-        let large = CGSize(width: unit * 3, height: unit * 3)
+        let unit: CGFloat = width / 3
+        positions.reserveCapacity(count)
 
-        var idx = 0
-        while idx < count {
-            let setY = CGFloat(idx / 10) * unit * 7 // ← セット単位で固定
+        for index in 0 ..< count {
+            let setIndex: Int = index / 10
+            let patternIndex: Int = index % 10
 
-            // ① 上段（最大 3）
-            for col in 0 ..< min(3, count - idx) {
-                positions.append((CGPoint(x: unit * CGFloat(col), y: setY), small))
-                idx += 1
-            }
-            if idx >= count { break }
+            let patternItem = Self.layoutPattern[patternIndex]
 
-            // ② 中段左（2×2）
-            positions.append((CGPoint(x: 0, y: unit + setY), medium))
-            idx += 1
-            if idx >= count { break }
+            let setY = CGFloat(setIndex) * unit * Self.setHeightInUnits
 
-            // ③ 中段右（縦2）
-            for row in 0 ..< min(2, count - idx) {
-                positions.append((CGPoint(
-                    x: unit * 2,
-                    y: unit * (1 + CGFloat(row)) + setY
-                ), small))
-                idx += 1
-            }
-            if idx >= count { break }
+            let xPos: CGFloat = patternItem.x * unit
+            let yPos: CGFloat = patternItem.y * unit + setY
+            let itemWidth: CGFloat = patternItem.width * unit
+            let itemHeight: CGFloat = patternItem.height * unit
 
-            // ④ 下段（最大 3）
-            for col in 0 ..< min(3, count - idx) {
-                positions.append((CGPoint(
-                    x: unit * CGFloat(col),
-                    y: unit * 3 + setY
-                ), small))
-                idx += 1
-            }
-            if idx >= count { break }
+            let point = CGPoint(x: xPos, y: yPos)
+            let size = CGSize(width: itemWidth, height: itemHeight)
 
-            // ⑤ 最下段（3×3）
-            positions.append((CGPoint(x: 0, y: unit * 4 + setY), large))
-            idx += 1
+            positions.append((point, size))
         }
+
         return positions
     }
 }

@@ -45,4 +45,7 @@ Carthage/Build/
 
 # Accio dependency management
 Dependencies/
-.accio/ 
+.accio/
+
+# Local CI output directory
+ci-outputs/ 

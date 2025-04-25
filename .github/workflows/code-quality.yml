@@ -10,17 +10,13 @@ on:
 jobs:
   format-and-lint:
     runs-on: macos-latest
+    env:
+      MINT_PATH: ${{ github.workspace }}/.mint
     outputs:
       result: ${{ steps.result.outputs.status }}
     steps:
     - uses: actions/checkout@v4
     
-    - name: Download Mint packages artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: mint-packages
-        path: . 
-
     - name: Run SwiftFormat
       run: mint run swiftformat .
 

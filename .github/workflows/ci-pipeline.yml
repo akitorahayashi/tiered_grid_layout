@@ -9,8 +9,8 @@ on:
 
 jobs:
   setup:
-    name: Mint Setup
-    uses: ./.github/workflows/mint-setup.yml
+    name: Setup Mint
+    uses: ./.github/workflows/setup-mint.yml
 
   # コード品質チェック
   code-quality:

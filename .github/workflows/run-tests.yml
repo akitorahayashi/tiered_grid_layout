@@ -10,16 +10,12 @@ on:
 jobs:
   build-and-test:
     runs-on: macos-latest
+    env:
+      MINT_PATH: ${{ github.workspace }}/.mint
     outputs:
       result: ${{ job.status }}
     steps:
     - uses: actions/checkout@v4
-
-    - name: Download Mint packages artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: mint-packages
-        path: .
 
     - name: Setup Xcode
       uses: maxim-lobanov/setup-xcode@v1

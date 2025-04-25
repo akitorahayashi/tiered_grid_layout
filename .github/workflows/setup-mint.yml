@@ -6,8 +6,9 @@ on:
 jobs:
   setup:
     runs-on: macos-latest
+    env:
+      MINT_PATH: ${{ github.workspace }}/.mint
     steps:
-      # Checkout is needed to access Mintfile for caching and bootstrap
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -29,16 +30,10 @@ jobs:
         uses: actions/cache@v4
         id: cache-mint-packages
         with:
-          path: .mint
+          path: ${{ env.MINT_PATH }}
           key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
           restore-keys: |
             ${{ runner.os }}-mint-
 
       - name: Bootstrap Mint packages
         run: mint bootstrap
-
-      - name: Upload Mint packages artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: mint-packages
-          path: .mint 

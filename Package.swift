@@ -23,8 +23,9 @@ let package = Package(
             ]
         ),
         // 後でテストを追加する場合は、ここで定義
-        // .testTarget(
-        //     name: "TieredGridLayoutTests",
-        //     dependencies: ["TieredGridLayout"]),
+        .testTarget(
+            name: "TieredGridLayoutTests",
+            dependencies: ["TieredGridLayout"]
+        ),
     ]
 )

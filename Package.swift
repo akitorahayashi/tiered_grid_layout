@@ -22,7 +22,6 @@ let package = Package(
                 "Info.plist",
             ]
         ),
-        // 後でテストを追加する場合は、ここで定義
         .testTarget(
             name: "TieredGridLayoutTests",
             dependencies: ["TieredGridLayout"]

@@ -2,7 +2,7 @@
 
 `TieredGridLayout` は、SwiftUIの`Layout`プロトコルを使用して実装されたカスタムレイアウトコンポーネントです
 
-`SampleApp` は `TieredGridLayout` フレームワークの使用方法を示すサンプルアプリケーションです
+`SampleApp` は `TieredGridLayout` ライブラリの使用方法を示すサンプルアプリケーションです
 
 ## 特徴
 
@@ -73,7 +73,7 @@ TieredGridLayout {
 
 ## プロジェクト構成
 
-- `TieredGridLayout/`: カスタムレイアウトを提供するフレームワークのソースコード
+- `TieredGridLayout/`: カスタムレイアウトを提供するライブラリのソースコード
 - `SampleApp/`: `TieredGridLayout` を使用するサンプルアプリケーションのソースコード
 - `project.yml`: XcodeGen で生成するプロジェクトを定義するファイル
 

@@ -20,6 +20,9 @@ jobs:
     - name: Install Mint
       run: brew install mint
 
+    - name: Bootstrap Mint dependencies
+      run: mint bootstrap
+
     - name: Setup Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
@@ -51,9 +54,8 @@ jobs:
           -destination "platform=iOS Simulator,id=${{ steps.select_simulator.outputs.simulator_id }}" \
           -derivedDataPath ./ci-outputs/test-results/DerivedData \
           -configuration Debug \
-          -skipMacroValidation \
           CODE_SIGNING_ALLOWED=NO \
-          | mint run xcbeautify
+          | xcbeautify
       continue-on-error: false
       
     - name: Run Unit Tests
@@ -68,7 +70,7 @@ jobs:
           -derivedDataPath ./ci-outputs/test-results/DerivedData \
           -enableCodeCoverage NO \
           -resultBundlePath ./ci-outputs/test-results/unit/TestResults.xcresult \
-          | mint run xcbeautify --report junit --report-path ./ci-outputs/test-results/unit/junit.xml
+          | xcbeautify --report junit --report-path ./ci-outputs/test-results/unit/junit.xml
         
         XCODEBUILD_EXIT_CODE=${PIPESTATUS[0]}
         echo "UNIT_TEST_XCODEBUILD_STATUS=$XCODEBUILD_EXIT_CODE" >> $GITHUB_ENV
@@ -98,7 +100,7 @@ jobs:
           -derivedDataPath ./ci-outputs/test-results/DerivedData \
           -enableCodeCoverage NO \
           -resultBundlePath ./ci-outputs/test-results/ui/TestResults.xcresult \
-          | mint run xcbeautify --report junit --report-path ./ci-outputs/test-results/ui/junit.xml
+          | xcbeautify --report junit --report-path ./ci-outputs/test-results/ui/junit.xml
           
         XCODEBUILD_EXIT_CODE=${PIPESTATUS[0]}
         echo "UI_TEST_XCODEBUILD_STATUS=$XCODEBUILD_EXIT_CODE" >> $GITHUB_ENV

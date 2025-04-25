@@ -5,12 +5,37 @@ path: TieredGridLayout.xcodeproj
 packages:
   TieredGridLayout:
     path: ./
+schemes:
+  TieredGridLayoutTests:
+    build:
+      targets:
+        TieredGridLayoutTests: all
+    test:
+      targets:
+        - TieredGridLayoutTests
+      config: Debug
+      gatherCoverageData: false
+    run:
+      config: Debug
+  TieredGridLayoutUITests:
+    build:
+      targets:
+        TieredGridLayoutUITests: all
+    test:
+      targets:
+        - TieredGridLayoutUITests
+      config: Debug
+      gatherCoverageData: false
+    run:
+      config: Debug
 targets:
   SampleApp:
     type: application
     platform: iOS
     deploymentTarget: "16.0"
-    sources: SampleApp
+    sources:
+      - SampleApp
+      - SampleApp/Shared
     dependencies:
       - package: TieredGridLayout
     info:
@@ -45,7 +70,9 @@ targets:
     type: bundle.ui-testing
     platform: iOS
     deploymentTarget: "16.0"
-    sources: TieredGridLayoutUITests
+    sources:
+      - TieredGridLayoutUITests
+      - SampleApp/Shared/TestingConstants.swift
     dependencies:
       - target: SampleApp
       - package: TieredGridLayout # target から package に変更

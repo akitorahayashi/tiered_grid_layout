@@ -22,6 +22,15 @@ jobs:
       - name: Install Mint
         run: |
           brew install mint
+
+      # --- Mint の依存関係をキャッシュ ---
+      - name: Cache Mint dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.mint/lib
+          key: ${{ runner.os }}-mint-${{ hashFiles('Mintfile') }}
+          restore-keys: |
+            ${{ runner.os }}-mint-
           
       - name: Install dependencies via Mint
         run: |

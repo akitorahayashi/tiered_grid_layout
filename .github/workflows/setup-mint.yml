@@ -15,19 +15,8 @@ jobs:
       - name: Setup Homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
-      - name: Cache Mint install
-        uses: actions/cache@v4
-        id: cache-mint-install
-        with:
-          path: /opt/homebrew/bin/mint
-          key: ${{ runner.os }}-mint-install
-
       - name: Install Mint
-        if: steps.cache-mint-install.outputs.cache-hit != 'true'
         run: brew install mint
-
-      - name: Add Homebrew bin to PATH
-        run: echo "/opt/homebrew/bin" >> $GITHUB_PATH
 
       - name: Cache Mint packages
         uses: actions/cache@v4

@@ -1,0 +1,44 @@
+name: Setup Mint Dependencies
+
+on:
+  workflow_call:
+
+jobs:
+  setup:
+    runs-on: macos-latest
+    steps:
+      # Checkout is needed to access Mintfile for caching and bootstrap
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Cache Mint install
+        uses: actions/cache@v4
+        id: cache-mint-install
+        with:
+          path: /opt/homebrew/bin/mint
+          key: ${{ runner.os }}-mint-install
+
+      - name: Install Mint
+        if: steps.cache-mint-install.outputs.cache-hit != 'true'
+        run: brew install mint
+
+      - name: Cache Mint packages
+        uses: actions/cache@v4
+        id: cache-mint-packages
+        with:
+          path: .mint
+          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
+          restore-keys: |
+            ${{ runner.os }}-mint-
+
+      - name: Bootstrap Mint packages
+        run: mint bootstrap
+
+      - name: Upload Mint packages artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mint-packages
+          path: .mint 

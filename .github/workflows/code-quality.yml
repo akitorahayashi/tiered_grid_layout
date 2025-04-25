@@ -1,4 +1,4 @@
-name: Format and Lint
+name: Code Quality
 
 on:
   workflow_call:
@@ -19,9 +19,6 @@ jobs:
 
     - name: Install Mint
       run: brew install mint
-
-    - name: Bootstrap Mint dependencies
-      run: mint bootstrap
     
     - name: Run SwiftFormat
       run: mint run swiftformat .

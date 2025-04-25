@@ -28,7 +28,7 @@ public struct TieredGridLayout: Layout {
         RelativeLayoutItem(x: 1, y: 3, width: 1, height: 1), // Item 7
         RelativeLayoutItem(x: 2, y: 3, width: 1, height: 1), // Item 8
         // ⑤ 最下段 (1 large item)
-        RelativeLayoutItem(x: 0, y: 4, width: 3, height: 3)  // Item 9
+        RelativeLayoutItem(x: 0, y: 4, width: 3, height: 3), // Item 9
     ]
 
     private static let setHeightInUnits: CGFloat = 7 // Pattern height in units
@@ -49,7 +49,7 @@ public struct TieredGridLayout: Layout {
         let count: Int = subviews.count
         let completeSets: Int = count / 10
         let remainingItems: Int = count % 10
-        var height: CGFloat = CGFloat(completeSets) * unit * Self.setHeightInUnits
+        var height = CGFloat(completeSets) * unit * Self.setHeightInUnits
 
         // Calculate height for remaining items
         if remainingItems > 0 {
@@ -99,7 +99,7 @@ public struct TieredGridLayout: Layout {
     }
 
     // Alignment → UnitPoint 変換
-    private func unitPoint(for alignment: Alignment) -> UnitPoint {
+    internal func unitPoint(for alignment: Alignment) -> UnitPoint {
         switch alignment {
             case .topLeading: return .topLeading
             case .top: return .top
@@ -114,7 +114,7 @@ public struct TieredGridLayout: Layout {
         }
     }
 
-    private func generatePositions(count: Int, width: CGFloat)
+    internal func generatePositions(count: Int, width: CGFloat)
         -> [(CGPoint, CGSize)]
     {
         var positions: [(CGPoint, CGSize)] = []
@@ -123,13 +123,13 @@ public struct TieredGridLayout: Layout {
         let unit: CGFloat = width / 3
         positions.reserveCapacity(count) // Allocate needed capacity
 
-        for i in 0..<count {
+        for i in 0 ..< count {
             let setIndex: Int = i / 10
             let patternIndex: Int = i % 10
 
             let patternItem = Self.layoutPattern[patternIndex]
 
-            let setY: CGFloat = CGFloat(setIndex) * unit * Self.setHeightInUnits
+            let setY = CGFloat(setIndex) * unit * Self.setHeightInUnits
 
             let xPos: CGFloat = patternItem.x * unit
             let yPos: CGFloat = patternItem.y * unit + setY

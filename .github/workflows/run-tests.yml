@@ -50,25 +50,13 @@ jobs:
         echo "シミュレータ ID ($SIMULATOR_ID) が選択されました"
         echo "simulator_id=$SIMULATOR_ID" >> $GITHUB_OUTPUT
 
-    - name: Build for Testing
+    - name: Build for Unit Testing
       run: |
         set -o pipefail
-        echo "シミュレータ ID (${{ steps.select_simulator.outputs.simulator_id }}) を使用してテスト用にビルドします"
-        
         echo "Building for Unit Tests (TieredGridLayoutTests)..."
         xcodebuild build-for-testing \
           -project "TieredGridLayout.xcodeproj" \
           -scheme "TieredGridLayoutTests" \
-          -destination "platform=iOS Simulator,id=${{ steps.select_simulator.outputs.simulator_id }}" \
-          -derivedDataPath ./ci-outputs/test-results/DerivedData \
-          -configuration Debug \
-          CODE_SIGNING_ALLOWED=NO \
-          | xcbeautify
-          
-        echo "Building for UI Tests (TieredGridLayoutUITests)..."
-        xcodebuild build-for-testing \
-          -project "TieredGridLayout.xcodeproj" \
-          -scheme "TieredGridLayoutUITests" \
           -destination "platform=iOS Simulator,id=${{ steps.select_simulator.outputs.simulator_id }}" \
           -derivedDataPath ./ci-outputs/test-results/DerivedData \
           -configuration Debug \
@@ -104,6 +92,20 @@ jobs:
           exit 1
         fi
         echo "✅ Unit test result bundle found at $RESULT_BUNDLE_PATH"
+      continue-on-error: false
+
+    - name: Build for UI Testing
+      run: |
+        set -o pipefail
+        echo "Building for UI Tests (TieredGridLayoutUITests)..."
+        xcodebuild build-for-testing \
+          -project "TieredGridLayout.xcodeproj" \
+          -scheme "TieredGridLayoutUITests" \
+          -destination "platform=iOS Simulator,id=${{ steps.select_simulator.outputs.simulator_id }}" \
+          -derivedDataPath ./ci-outputs/test-results/DerivedData \
+          -configuration Debug \
+          CODE_SIGNING_ALLOWED=NO \
+          | xcbeautify
       continue-on-error: false
 
     - name: Run UI Tests

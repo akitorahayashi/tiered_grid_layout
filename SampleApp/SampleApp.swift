@@ -4,7 +4,11 @@ import SwiftUI
 struct SampleApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if CommandLine.arguments.contains(LaunchArgument.uiTesting.rawValue) {
+                TestContentView()
+            } else {
+                ContentView()
+            }
         }
     }
 }

@@ -99,7 +99,7 @@ public struct TieredGridLayout: Layout {
     }
 
     // Alignment → UnitPoint 変換
-    internal func unitPoint(for alignment: Alignment) -> UnitPoint {
+    func unitPoint(for alignment: Alignment) -> UnitPoint {
         switch alignment {
             case .topLeading: return .topLeading
             case .top: return .top
@@ -114,18 +114,19 @@ public struct TieredGridLayout: Layout {
         }
     }
 
-    internal func generatePositions(count: Int, width: CGFloat)
+    func generatePositions(count: Int, width: CGFloat)
         -> [(CGPoint, CGSize)]
     {
         var positions: [(CGPoint, CGSize)] = []
+        // swiftlint:disable:next empty_count
         guard count > 0, width > 0 else { return positions }
 
         let unit: CGFloat = width / 3
-        positions.reserveCapacity(count) // Allocate needed capacity
+        positions.reserveCapacity(count)
 
-        for i in 0 ..< count {
-            let setIndex: Int = i / 10
-            let patternIndex: Int = i % 10
+        for index in 0 ..< count {
+            let setIndex: Int = index / 10
+            let patternIndex: Int = index % 10
 
             let patternItem = Self.layoutPattern[patternIndex]
 

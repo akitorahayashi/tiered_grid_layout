@@ -25,18 +25,6 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         # DEVELOPMENT_TEAM:
 
-  TieredGridLayout:
-    type: framework
-    platform: iOS
-    deploymentTarget: "16.0"
-    sources: TieredGridLayout
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.TieredGridLayout
-        GENERATE_INFOPLIST_FILE: YES
-        MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "1"
-
   # --- ユニットテストターゲット ---
   TieredGridLayoutTests:
     type: bundle.unit-test
@@ -44,7 +32,7 @@ targets:
     deploymentTarget: "16.0"
     sources: TieredGridLayoutTests
     dependencies:
-      - target: TieredGridLayout # テスト対象: フレームワーク
+      - package: TieredGridLayout # target から package に変更
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.TieredGridLayoutTests
@@ -59,7 +47,8 @@ targets:
     deploymentTarget: "16.0"
     sources: TieredGridLayoutUITests
     dependencies:
-      - target: SampleApp # テスト対象: アプリケーション
+      - target: SampleApp
+      - package: TieredGridLayout # target から package に変更
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.TieredGridLayoutUITests

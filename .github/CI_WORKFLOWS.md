@@ -47,14 +47,21 @@ Pull Requestに対して、テスト結果のレポート、GitHub Copilotによ
 
 - **トリガー**: `ci-cd-pipeline.yml` から `workflow_call` で呼び出し
 - **処理**:
-    1.  共通・ビルドステップ関数を `source`
-    2.  `mint-packages` アーティファクトをダウンロード
-    3.  watchOSシミュレータを選択
-    4.  テスト用ビルド (`build_for_testing`)、`mint run xcbeautify` で結果を整形
-    5.  ユニットテスト実行と結果検証 (`run_unit_tests`, `verify_unit_test_results`)、`mint run xcbeautify` で結果を整形
-    6.  UIテスト実行と結果検証 (`run_ui_tests`, `verify_ui_test_results`)、`mint run xcbeautify` で結果を整形
-    7.  JUnit XMLレポート生成
-    8.  テスト結果 (`.xcresult`, `.xml`) をアーティファクト (`test-results`) としてアップロード
+    1.  リポジトリをチェックアウト (`actions/checkout`)
+    2.  Mintパッケージのキャッシュを復元 (`actions/cache`)
+    3.  Xcode環境をセットアップ (`maxim-lobanov/setup-xcode`)
+    4.  Mintをインストール (`brew install mint`)
+    5.  Xcodeプロジェクトを生成 (`mint run xcodegen generate`)
+    6.  テスト結果出力用ディレクトリを作成
+    7.  シミュレータ検索スクリプトに実行権限を付与
+    8.  テスト用iOSシミュレータを選択
+    9.  ユニットテスト用にビルド (`Build for Unit Testing`)、`xcbeautify` で結果を整形
+    10. ユニットテストを実行 (`Run Unit Tests` - `test-without-building`)、JUnitレポート生成、`xcbeautify` で結果を整形
+    11. ユニットテスト結果バンドルを検証 (`Verify Unit Test Results`)
+    12. UIテスト用にビルド (`Build for UI Testing`)、`xcbeautify` で結果を整形
+    13. UIテストを実行 (`Run UI Tests` - `test-without-building`)、JUnitレポート生成、`xcbeautify` で結果を整形
+    14. UIテスト結果バンドルを検証 (`Verify UI Test Results`)
+    15. テスト結果 (`.xcresult`, `.xml`) をアーティファクト (`test-results`) としてアップロード
 
 ### `build-unsigned-archive.yml` (署名なしアーカイブ作成)
 

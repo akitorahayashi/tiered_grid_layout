@@ -43,6 +43,16 @@ Pull Requestに対して、テスト結果のレポート、GitHub Copilotによ
     6.  アーカイブビルド検証 (`main` Push時, `build-unsigned-archive.yml`)
     7.  パイプライン完了ステータス通知 (PR時)
 
+### `setup-mint.yml` (Mint依存関係セットアップ)
+
+- **トリガー**: `ci-cd-pipeline.yml` から `workflow_call` で呼び出し
+- **処理**:
+    1.  リポジトリをチェックアウト
+    2.  Homebrewをセットアップ
+    3.  Mintをインストール (`brew install mint`)
+    4.  Mintパッケージをキャッシュ (`actions/cache`)
+    5.  Mintパッケージをブートストラップ (`mint bootstrap`)
+
 ### `run-tests.yml` (テスト実行)
 
 - **トリガー**: `ci-cd-pipeline.yml` から `workflow_call` で呼び出し

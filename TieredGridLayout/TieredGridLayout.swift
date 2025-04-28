@@ -4,37 +4,36 @@ public struct TieredGridLayout: Layout {
     private let alignment: Alignment
     public init(alignment: Alignment = .center) { self.alignment = alignment }
 
-    // MARK: - Layout Pattern Definition
+    // MARK: - レイアウトパターン定義
 
     private struct RelativeLayoutItem {
-        let x: CGFloat // x offset in unit multiples
-        let y: CGFloat // y offset in unit multiples
-        let width: CGFloat // width in unit multiples
-        let height: CGFloat // height in unit multiples
+        let x: CGFloat // ユニット単位のxオフセット
+        let y: CGFloat // ユニット単位のyオフセット
+        let width: CGFloat // ユニット単位の幅
+        let height: CGFloat // ユニット単位の高さ
     }
 
     private static let layoutPattern: [RelativeLayoutItem] = [
-        // ① 上段 (3 small items)
-        RelativeLayoutItem(x: 0, y: 0, width: 1, height: 1), // Item 0
-        RelativeLayoutItem(x: 1, y: 0, width: 1, height: 1), // Item 1
-        RelativeLayoutItem(x: 2, y: 0, width: 1, height: 1), // Item 2
-        // ② 中段左 (1 medium item)
-        RelativeLayoutItem(x: 0, y: 1, width: 2, height: 2), // Item 3
-        // ③ 中段右 (2 small items)
-        RelativeLayoutItem(x: 2, y: 1, width: 1, height: 1), // Item 4
-        RelativeLayoutItem(x: 2, y: 2, width: 1, height: 1), // Item 5
-        // ④ 下段 (3 small items)
-        RelativeLayoutItem(x: 0, y: 3, width: 1, height: 1), // Item 6
-        RelativeLayoutItem(x: 1, y: 3, width: 1, height: 1), // Item 7
-        RelativeLayoutItem(x: 2, y: 3, width: 1, height: 1), // Item 8
-        // ⑤ 最下段 (1 large item)
-        RelativeLayoutItem(x: 0, y: 4, width: 3, height: 3), // Item 9
+        // ① 上段 (小アイテム3つ)
+        RelativeLayoutItem(x: 0, y: 0, width: 1, height: 1), // アイテム 1
+        RelativeLayoutItem(x: 1, y: 0, width: 1, height: 1), // アイテム 2
+        RelativeLayoutItem(x: 2, y: 0, width: 1, height: 1), // アイテム 3
+        // ② 中段左 (中アイテム1つ)
+        RelativeLayoutItem(x: 0, y: 1, width: 2, height: 2), // アイテム 4
+        // ③ 中段右 (小アイテム2つ)
+        RelativeLayoutItem(x: 2, y: 1, width: 1, height: 1), // アイテム 5
+        RelativeLayoutItem(x: 2, y: 2, width: 1, height: 1), // アイテム 6
+        // ④ 下段 (小アイテム3つ)
+        RelativeLayoutItem(x: 0, y: 3, width: 1, height: 1), // アイテム 7
+        RelativeLayoutItem(x: 1, y: 3, width: 1, height: 1), // アイテム 8
+        RelativeLayoutItem(x: 2, y: 3, width: 1, height: 1), // アイテム 9
+        // ⑤ 最下段 (大アイテム1つ)
+        RelativeLayoutItem(x: 0, y: 4, width: 3, height: 3), // アイテム 10
     ]
 
-    private static let setHeightInUnits: CGFloat = 7 // Pattern height in units
+    private static let setHeightInUnits: CGFloat = 7 // コンテナの全高 (ユニット単位)
 
-    // MARK: - Layout sizing
-
+    // コンテナの全高を計算
     public func sizeThatFits(
         proposal: ProposedViewSize,
         subviews: Subviews,
@@ -51,9 +50,7 @@ public struct TieredGridLayout: Layout {
         let remainingItems: Int = count % 10
         var height = CGFloat(completeSets) * unit * Self.setHeightInUnits
 
-        // Calculate height for remaining items
         if remainingItems > 0 {
-            // Find the maximum y + height of the remaining items in the pattern
             let maxRelativeYPlusHeight = Self.layoutPattern[..<remainingItems]
                 .map { $0.y + $0.height }
                 .max() ?? 0

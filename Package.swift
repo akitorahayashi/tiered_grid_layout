@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "TieredGridLayout",
+    name: "tiered-grid-layout",
     platforms: [
         .iOS(.v16),
     ],

@@ -69,7 +69,7 @@ jobs:
           set -euo pipefail
           echo "Checking archive contents..."
           # Check if the specific .app directory exists within the archive's Products/Applications path
-          ARCHIVE_PATH="./ci-outputs/production/archives/TieredGridLayout.xcarchive"
+          ARCHIVE_PATH="./ci-outputs/production/archives/SampleApp.xcarchive"
           ARCHIVE_APP_PATH="$ARCHIVE_PATH/Products/Applications/SampleApp.app"
           if [ ! -d "$ARCHIVE_APP_PATH" ]; then
             echo "Error: 'SampleApp.app' not found in expected archive location ($ARCHIVE_APP_PATH)."
@@ -85,5 +85,5 @@ jobs:
         with:
           name: unsigned-archive
           path: |-
-            ./ci-outputs/production/archives/TieredGridLayout.xcarchive
+            ./ci-outputs/production/archives/SampleApp.xcarchive
           retention-days: 7

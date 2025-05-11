@@ -59,8 +59,8 @@ jobs:
         set -o pipefail
         echo "シミュレータ ID (${{ steps.select_simulator.outputs.simulator_id }}) を使用してテスト用にビルドします"
         xcodebuild build-for-testing \
-          -project "TieredGridLayout.xcodeproj" \
-          -scheme "TieredGridLayout" \
+          -project "SampleApp.xcodeproj" \
+          -scheme "SampleApp" \
           -destination "platform=iOS Simulator,id=${{ steps.select_simulator.outputs.simulator_id }}" \
           -derivedDataPath ./${{ env.DERIVED_DATA_PATH }} \
           -configuration Debug \
@@ -120,7 +120,7 @@ jobs:
           set -o pipefail
           echo "シミュレータ ID (${{ needs.build-for-testing.outputs.simulator_id }}) を使用してユニットテストを実行します"
           xcodebuild test-without-building \
-            -project "TieredGridLayout.xcodeproj" \
+            -project "SampleApp.xcodeproj" \
             -scheme "TieredGridLayoutTests" \
             -destination "platform=iOS Simulator,id=${{ needs.build-for-testing.outputs.simulator_id }}" \
             -derivedDataPath ./${{ needs.build-for-testing.outputs.derived_data_path }} \
@@ -193,7 +193,7 @@ jobs:
           set -o pipefail
           echo "シミュレータ ID (${{ needs.build-for-testing.outputs.simulator_id }}) を使用して UI テストを実行します"
           xcodebuild test-without-building \
-            -project "TieredGridLayout.xcodeproj" \
+            -project "SampleApp.xcodeproj" \
             -scheme "TieredGridLayoutUITests" \
             -destination "platform=iOS Simulator,id=${{ needs.build-for-testing.outputs.simulator_id }}" \
             -derivedDataPath ./${{ needs.build-for-testing.outputs.derived_data_path }} \

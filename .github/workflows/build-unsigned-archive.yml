@@ -53,11 +53,11 @@ jobs:
           # Build unsigned archive
           echo "Building unsigned archive for SampleApp..."
           set -o pipefail && xcodebuild \
-            -project "TieredGridLayout.xcodeproj" \
+            -project "SampleApp.xcodeproj" \
             -scheme "SampleApp" \
             -configuration Release \
             -destination "generic/platform=iOS" \
-            -archivePath "./ci-outputs/production/archives/TieredGridLayout.xcarchive" \
+            -archivePath "./ci-outputs/production/archives/SampleApp.xcarchive" \
             -derivedDataPath "./ci-outputs/production/archives/DerivedData" \
             -skipMacroValidation \
             CODE_SIGNING_ALLOWED=NO \

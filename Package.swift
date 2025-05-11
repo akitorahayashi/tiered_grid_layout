@@ -24,7 +24,8 @@ let package = Package(
         ),
         .testTarget(
             name: "TieredGridLayoutTests",
-            dependencies: ["TieredGridLayout"]
+            dependencies: ["TieredGridLayout"],
+            path: "TieredGridLayoutTests"
         ),
     ]
 )

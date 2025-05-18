@@ -4,11 +4,18 @@
 
 `SampleApp` は `TieredGridLayout` ライブラリの使用方法を示すサンプルアプリケーションです
 
+<a href="https://deepwiki.com/atrh95/tiered-grid-layout"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+
 ## 特徴
 
 - 単一サイズの小ブロック(1x1)、中ブロック(2x2)、大ブロック(3x3)を組み合わせたレイアウト
-- SwiftUIのLayoutプロトコルによる実装
 - ブロック数に応じた動的なレイアウト調整
+- レイアウト計算結果をキャッシュし、再描画時のパフォーマンスを向上
+
+## 対応OS
+
+- iOS 16.0+
+- macOS 13.0+
 
 ## 実装の詳細
 
@@ -120,3 +127,29 @@ struct ContentView: View {
 ```
 
 デフォルトの配置は `.center` です。
+
+## テスト
+
+### ユニットテスト
+
+`TieredGridLayout` パッケージのユニットテストは、Swift Package Manager を使用して実行されます。
+リポジトリのルートディレクトリで以下のコマンドを実行してください。
+
+```bash
+swift test
+```
+
+これにより、`TieredGridLayoutTests` ターゲット内のテストが実行されます。
+
+### UIテスト
+
+`SampleApp` のUIテストは、Xcodeのテストフレームワークを使用して実行されます。
+テストを実行するには、まず `project.yml` からXcodeプロジェクトを生成する必要があります。
+
+```bash
+mint run xcodegen
+```
+
+その後、Xcode IDEからテストを実行できます。
+
+これにより、`TieredGridLayoutUITests` ターゲット内のUIテストが実行され、`SampleApp` を使用してユーザーインターフェースとインタラクションを検証することができます。

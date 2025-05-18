@@ -58,7 +58,7 @@ jobs:
     
   # アーカイブビルド検証
   archive-build:
-    name: Verify Archive Build
+    name: Archive Build
     needs: [setup-mint]
     uses: ./.github/workflows/build-unsigned-archive.yml
     

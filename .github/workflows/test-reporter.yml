@@ -20,11 +20,20 @@ jobs:
       - name: Checkout code # jq を使うためにリポジトリをチェックアウト
         uses: actions/checkout@v4
 
-      - name: Download test results artifact
+      - name: Create download directory
+        run: mkdir -p ./ci-outputs/test-results
+
+      - name: Download Unit Test results artifact
         uses: actions/download-artifact@v4
         with:
-          name: test-results # run-tests.yml でアップロードされたテスト結果のアーティファクト名
-          path: ./ci-outputs/test-results
+          name: unit-test-results-${{ github.run_id }}
+          path: ./ci-outputs/test-results/unit
+          
+      - name: Download UI Test results artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ui-test-results-${{ github.run_id }}
+          path: ./ci-outputs/test-results/ui
           
       - name: Publish Test Report as Check
         uses: mikepenz/action-junit-report@v4
@@ -38,7 +47,6 @@ jobs:
           check_name: 'Test Suite Results' # Checksタブに表示される名前
 
       - name: Create or Update PR Comment
-        # Run if test results or any coverage report was found
         if: ${{ hashFiles('./ci-outputs/test-results/**/*.xml') != '' }}
         uses: actions/github-script@v7
         with:
@@ -52,7 +60,7 @@ jobs:
 
             const { owner, repo } = context.repo;
 
-            const commentMarker = '<!-- test-and-coverage-report -->';
+            const commentMarker = '<!-- test-report -->';
             let commentBody = `${commentMarker}\n\n## Test Summary\n\n`;
             const fs = require('fs');
 

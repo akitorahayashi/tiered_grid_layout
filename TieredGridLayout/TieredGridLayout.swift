@@ -1,7 +1,8 @@
 import SwiftUI
 
+@available(iOS 16.0, macOS 13.0, *)
 public struct TieredGridLayout: Layout {
-    struct CacheData {
+    public struct CacheData {
         var cachedWidth: CGFloat?
         var cachedCount: Int?
         var positions: [(CGPoint, CGSize)]?
@@ -11,11 +12,13 @@ public struct TieredGridLayout: Layout {
     public typealias Cache = CacheData
 
     // Layoutプロトコルのメソッド、レイアウト処理を開始する際に、レイアウトインスタンスごとに最初に呼び出される
+    @available(iOS 16.0, macOS 13.0, *)
     public func makeCache(subviews _: Subviews) -> CacheData {
         CacheData()
     }
 
-    private let alignment: Alignment
+    let alignment: Alignment
+    @available(iOS 16.0, macOS 13.0, *)
     public init(alignment: Alignment = .center) { self.alignment = alignment }
 
     // MARK: - レイアウトパターン
@@ -48,6 +51,7 @@ public struct TieredGridLayout: Layout {
     private static let setHeightInUnits: CGFloat = 7 // コンテナの全高 (ユニット単位)
 
     // コンテナの全高を計算
+    @available(iOS 16.0, macOS 13.0, *)
     public func sizeThatFits(
         proposal: ProposedViewSize,
         subviews: Subviews,
@@ -91,6 +95,7 @@ public struct TieredGridLayout: Layout {
         )
     }
 
+    @available(iOS 16.0, macOS 13.0, *)
     public func placeSubviews(
         in bounds: CGRect,
         proposal _: ProposedViewSize,
@@ -142,6 +147,7 @@ public struct TieredGridLayout: Layout {
     }
 
     // Alignment から UnitPoint への変換
+    @available(iOS 16.0, macOS 13.0, *)
     func unitPoint(for alignment: Alignment) -> UnitPoint {
         switch alignment {
             case .topLeading: return .topLeading
@@ -153,10 +159,11 @@ public struct TieredGridLayout: Layout {
             case .bottomLeading: return .bottomLeading
             case .bottom: return .bottom
             case .bottomTrailing: return .bottomTrailing
-            default: return .topLeading // デフォルトは .topLeading
+            default: return .center // デフォルトは .center
         }
     }
 
+    @available(iOS 16.0, macOS 13.0, *)
     func generatePositions(numberOfItems: Int, width: CGFloat)
         -> [(CGPoint, CGSize)]
     {

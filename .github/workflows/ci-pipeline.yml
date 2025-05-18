@@ -16,7 +16,8 @@ jobs:
   # Swift Packageのビルドとテスト
   package-test:
     name: Swift Package Test
-    uses: ./.github/workflows/swift-package-tests.yml
+    uses: ./.github/workflows/package-tests.yml
+    secrets: inherit
 
   # コード品質チェック
   code-quality:

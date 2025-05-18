@@ -127,3 +127,29 @@ struct ContentView: View {
 ```
 
 デフォルトの配置は `.center` です。
+
+## テスト
+
+### ユニットテスト
+
+`TieredGridLayout` パッケージのユニットテストは、Swift Package Manager を使用して実行されます。
+リポジトリのルートディレクトリで以下のコマンドを実行してください。
+
+```bash
+swift test
+```
+
+これにより、`TieredGridLayoutTests` ターゲット内のテストが実行されます。
+
+### UIテスト
+
+`SampleApp` のUIテストは、Xcodeのテストフレームワークを使用して実行されます。
+テストを実行するには、まず `project.yml` からXcodeプロジェクトを生成する必要があります。
+
+```bash
+mint run xcodegen
+```
+
+その後、Xcode IDEからテストを実行できます。
+
+これにより、`TieredGridLayoutUITests` ターゲット内のUIテストが実行され、`SampleApp` を使用してユーザーインターフェースとインタラクションを検証することができます。

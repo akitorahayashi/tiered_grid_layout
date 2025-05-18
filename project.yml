@@ -5,18 +5,6 @@ packages:
   TieredGridLayout:
     path: ./
 schemes:
-  TieredGridLayoutTests:
-    path: TieredGridLayoutTests
-    build:
-      targets:
-        TieredGridLayoutTests: all
-    test:
-      targets:
-        - TieredGridLayoutTests
-      config: Debug
-      gatherCoverageData: false
-    run:
-      config: Debug
   TieredGridLayoutUITests:
     path: TieredGridLayoutUITests
     build:
@@ -59,21 +47,6 @@ targets:
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
         # DEVELOPMENT_TEAM:
-
-  # --- ユニットテストターゲット ---
-  TieredGridLayoutTests:
-    type: bundle.unit-test
-    platform: iOS
-    deploymentTarget: "16.0"
-    sources: TieredGridLayoutTests
-    dependencies:
-      - package: TieredGridLayout # target から package に変更
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.TieredGridLayoutTests
-        GENERATE_INFOPLIST_FILE: YES
-        # DEVELOPMENT_TEAM:
-        TEST_HOST: # フレームワークテストのため空
 
   # --- UIテストターゲット ---
   TieredGridLayoutUITests:

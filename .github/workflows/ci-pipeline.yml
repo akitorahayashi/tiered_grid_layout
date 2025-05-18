@@ -34,7 +34,7 @@ jobs:
   # テスト結果レポート生成
   test-report:
     name: Test Report
-    needs: build-and-test
+    needs: [build-and-test, package-test]
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/test-reporter.yml
     with:

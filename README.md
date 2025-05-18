@@ -136,7 +136,7 @@ struct ContentView: View {
 リポジトリのルートディレクトリで以下のコマンドを実行してください。
 
 ```bash
-swift test
+$ swift test
 ```
 
 これにより、`TieredGridLayoutTests` ターゲット内のテストが実行されます。
@@ -147,7 +147,7 @@ swift test
 テストを実行するには、まず `project.yml` からXcodeプロジェクトを生成する必要があります。
 
 ```bash
-mint run xcodegen
+$ mint run xcodegen
 ```
 
 その後、Xcode IDEからテストを実行できます。

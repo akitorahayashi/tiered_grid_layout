@@ -3,7 +3,7 @@ options:
   bundleIdPrefix: com.akitorahayashi.TieredGridLayout.SampleApp
 packages:
   TieredGridLayout:
-    path: ./
+    path: .
 schemes:
   TieredGridLayoutUITests:
     path: TieredGridLayoutUITests
@@ -58,10 +58,10 @@ targets:
       - SampleApp/Shared/TestingConstants.swift
     dependencies:
       - target: SampleApp
-      - package: TieredGridLayout # target から package に変更
+      - package: TieredGridLayout
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.akitorahayashi.TieredGridLayoutUITests
         GENERATE_INFOPLIST_FILE: YES
         # DEVELOPMENT_TEAM:
-        TEST_TARGET_NAME: SampleApp # テスト実行対象アプリ名
+        TEST_TARGET_NAME: SampleApp

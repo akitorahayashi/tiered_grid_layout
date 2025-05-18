@@ -1,10 +1,24 @@
 import SwiftUI
 
 public struct TieredGridLayout: Layout {
+    struct CacheData {
+        var cachedWidth: CGFloat?
+        var cachedCount: Int?
+        var positions: [(CGPoint, CGSize)]?
+        var calculatedHeight: CGFloat?
+    }
+
+    public typealias Cache = CacheData
+
+    // Layoutプロトコルのメソッド、レイアウト処理を開始する際に、レイアウトインスタンスごとに最初に呼び出される
+    public func makeCache(subviews _: Subviews) -> CacheData {
+        CacheData()
+    }
+
     private let alignment: Alignment
     public init(alignment: Alignment = .center) { self.alignment = alignment }
 
-    // MARK: - レイアウトパターン定義
+    // MARK: - レイアウトパターン
 
     private struct RelativeLayoutItem {
         let x: CGFloat // ユニット単位のxオフセット
@@ -37,15 +51,22 @@ public struct TieredGridLayout: Layout {
     public func sizeThatFits(
         proposal: ProposedViewSize,
         subviews: Subviews,
-        cache _: inout ()
+        cache: inout CacheData
     ) -> CGSize {
         guard !subviews.isEmpty else { return .zero }
 
         let width: CGFloat = proposal.width ?? 0
         guard width > 0 else { return .zero }
+        let count: Int = subviews.count
+
+        // 高さ計算のためのキャッシュ有効性を確認
+        if let cachedW = cache.cachedWidth, let cachedC = cache.cachedCount, let cachedH = cache.calculatedHeight,
+           cachedW == width, cachedC == count
+        {
+            return CGSize(width: width, height: max(cachedH, proposal.height ?? 0))
+        }
 
         let unit: CGFloat = width / 3
-        let count: Int = subviews.count
         let completeSets: Int = count / 10
         let remainingItems: Int = count % 10
         var height = CGFloat(completeSets) * unit * Self.setHeightInUnits
@@ -56,6 +77,12 @@ public struct TieredGridLayout: Layout {
                 .max() ?? 0
             height += maxRelativeYPlusHeight * unit
         }
+
+        // 新しく計算された高さとパラメータでキャッシュを更新
+        cache.cachedWidth = width
+        cache.cachedCount = count
+        cache.calculatedHeight = height
+        cache.positions = nil // 高さが変更された場合、位置を無効化
 
         let proposedHeight: CGFloat = proposal.height ?? 0
         return CGSize(
@@ -68,18 +95,37 @@ public struct TieredGridLayout: Layout {
         in bounds: CGRect,
         proposal _: ProposedViewSize,
         subviews: Subviews,
-        cache _: inout ()
+        cache: inout CacheData
     ) {
         guard !subviews.isEmpty else { return }
 
-        let width: CGFloat = bounds.width
-        let positions: [(CGPoint, CGSize)] = generatePositions(count: subviews.count, width: width)
+        let currentWidth: CGFloat = bounds.width
+        let currentCount: Int = subviews.count
+        var positionsToUse: [(CGPoint, CGSize)]
+
+        // 位置情報のキャッシュ有効性を確認
+        if let cachedW = cache.cachedWidth, let cachedC = cache.cachedCount, let cachedPositions = cache.positions,
+           cachedW == currentWidth, cachedC == currentCount
+        {
+            positionsToUse = cachedPositions
+        } else {
+            // キャッシュ無効/未計算時: 位置を生成
+            positionsToUse = generatePositions(numberOfItems: currentCount, width: currentWidth)
+            // 新しい位置とパラメータでキャッシュを更新
+            cache.cachedWidth = currentWidth
+            cache.cachedCount = currentCount
+            cache.positions = positionsToUse
+            // cache.calculatedHeight は、この幅で sizeThatFits が呼び出されていない場合、古い可能性があります。
+            // SwiftUIのレイアウト処理では通常 sizeThatFits が先に呼び出されるため、
+            // ここでは高さの再計算は行いません。
+        }
+
         let anchor: UnitPoint = unitPoint(for: alignment)
 
-        for (index, subview) in subviews.enumerated() where index < positions.count {
-            let (pt, size): (CGPoint, CGSize) = positions[index]
+        for (index, subview) in subviews.enumerated() where index < positionsToUse.count {
+            let (pt, size): (CGPoint, CGSize) = positionsToUse[index]
 
-            // anchor が .center なら (w/2, h/2) だけ右下へオフセット
+            // anchor が .center なら (w/2, h/2) だけ右下へ移動
             let offsetX: CGFloat = size.width * anchor.x
             let offsetY: CGFloat = size.height * anchor.y
             let offset = CGPoint(x: offsetX, y: offsetY)
@@ -95,7 +141,7 @@ public struct TieredGridLayout: Layout {
         }
     }
 
-    // Alignment → UnitPoint 変換
+    // Alignment から UnitPoint への変換
     func unitPoint(for alignment: Alignment) -> UnitPoint {
         switch alignment {
             case .topLeading: return .topLeading
@@ -107,21 +153,20 @@ public struct TieredGridLayout: Layout {
             case .bottomLeading: return .bottomLeading
             case .bottom: return .bottom
             case .bottomTrailing: return .bottomTrailing
-            default: return .topLeading // デフォルトは .topLeading に
+            default: return .topLeading // デフォルトは .topLeading
         }
     }
 
-    func generatePositions(count: Int, width: CGFloat)
+    func generatePositions(numberOfItems: Int, width: CGFloat)
         -> [(CGPoint, CGSize)]
     {
         var positions: [(CGPoint, CGSize)] = []
-        // swiftlint:disable:next empty_count
-        guard count > 0, width > 0 else { return positions }
+        guard numberOfItems > 0, width > 0 else { return positions }
 
         let unit: CGFloat = width / 3
-        positions.reserveCapacity(count)
+        positions.reserveCapacity(numberOfItems)
 
-        for index in 0 ..< count {
+        for index in 0 ..< numberOfItems {
             let setIndex: Int = index / 10
             let patternIndex: Int = index % 10
 

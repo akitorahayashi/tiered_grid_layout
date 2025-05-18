@@ -4,11 +4,14 @@
 
 `SampleApp` は `TieredGridLayout` ライブラリの使用方法を示すサンプルアプリケーションです
 
+<a href="https://deepwiki.com/atrh95/tiered-grid-layout"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+
 ## 特徴
 
 - 単一サイズの小ブロック(1x1)、中ブロック(2x2)、大ブロック(3x3)を組み合わせたレイアウト
 - SwiftUIのLayoutプロトコルによる実装
 - ブロック数に応じた動的なレイアウト調整
+- レイアウト計算結果をキャッシュし、再描画時のパフォーマンスを向上
 
 ## 実装の詳細
 

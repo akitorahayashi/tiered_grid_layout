@@ -9,15 +9,15 @@ on:
         type: number
 
 permissions:
-  checks: write          # JUnitレポートをChecksとして表示するために必要
-  actions: read          # アーティファクトをダウンロードするために必要
-  pull-requests: write   # PRにコメントするために必要
+  checks: write         
+  actions: read          
+  pull-requests: write  
 
 jobs:
-  report:
+  report: 
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code # jq を使うためにリポジトリをチェックアウト
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Create download directory
@@ -37,14 +37,13 @@ jobs:
 
       - name: Publish Test Report as Check
         uses: mikepenz/action-junit-report@v4
-        # JUnitファイルが存在する場合のみ実行
         if: ${{ hashFiles('./ci-outputs/test-results/ui/junit.xml') != '' || hashFiles('./ci-outputs/test-results/package/results.xml') != '' }}
         with:
           report_paths: './ci-outputs/test-results/ui/junit.xml,./ci-outputs/test-results/package/results.xml'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          fail_on_failure: false # レポートステップ自体は失敗させない
-          require_tests: false # テストがなくてもエラーにしない
-          check_name: 'Test Suite Results' # Checksタブに表示される名前
+          fail_on_failure: false
+          require_tests: false
+          check_name: 'Test Suite Results'
 
       - name: Create or Update PR Comment
         if: ${{ hashFiles('./ci-outputs/test-results/**/*.xml') != '' || hashFiles('./ci-outputs/test-results/package/results.xml') != '' }}

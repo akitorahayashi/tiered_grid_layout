@@ -12,7 +12,6 @@ jobs:
     runs-on: macos-latest
     env:
       MINT_PATH: ${{ github.workspace }}/.mint
-      DERIVED_DATA_PATH: "ci-outputs/test-results/DerivedData"
     outputs:
       result: ${{ steps.ui_tests.outcome }}
     steps:
@@ -39,7 +38,7 @@ jobs:
       run: mint run xcodegen generate
 
     - name: Create Test Output Directories
-      run: mkdir -p ${{ env.DERIVED_DATA_PATH }} ci-outputs/test-results/ui
+      run: mkdir -p ci-outputs/test-results/ui
         
     - name: Make find-simulator script executable
       run: chmod +x .github/scripts/find-simulator.sh
@@ -62,7 +61,6 @@ jobs:
           -project "SampleApp.xcodeproj" \
           -scheme "TieredGridLayoutUITests" \
           -destination "platform=iOS Simulator,id=${{ steps.select_simulator.outputs.simulator_id }}" \
-          -derivedDataPath ./${{ env.DERIVED_DATA_PATH }} \
           -configuration Debug \
           CODE_SIGNING_ALLOWED=NO \
           -enableCodeCoverage NO \

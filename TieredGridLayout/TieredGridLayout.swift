@@ -22,7 +22,7 @@ public struct TieredGridLayout: Layout {
 
     @available(iOS 16.0, macOS 13.0, *)
     public init(alignment: Alignment = .center, layoutPattern: TGLayoutPattern = TGLayoutPattern()) {
-        self.itemAlignmentInElement = alignment
+        itemAlignmentInElement = alignment
         self.layoutPattern = layoutPattern
     }
 
@@ -41,30 +41,30 @@ public struct TieredGridLayout: Layout {
 
         for layer in layoutPattern.layers {
             switch layer {
-            case .threeSmall:
-                // 小アイテム3つを横に並べる
-                for i in 0..<3 {
-                    items.append(RelativeLayoutItem(x: CGFloat(i), y: currentY, width: 1, height: 1))
-                }
-            case .mediumWithTwoSmall(let mediumOnLeft):
-                if mediumOnLeft {
-                    // 中アイテム1つを左に配置
-                    items.append(RelativeLayoutItem(x: 0, y: currentY, width: 2, height: 2))
-                    // 小アイテム2つを右に縦に並べる
-                    for i in 0..<2 {
-                        items.append(RelativeLayoutItem(x: 2, y: currentY + CGFloat(i), width: 1, height: 1))
+                case .threeSmall:
+                    // 小アイテム3つを横に並べる
+                    for i in 0 ..< 3 {
+                        items.append(RelativeLayoutItem(x: CGFloat(i), y: currentY, width: 1, height: 1))
                     }
-                } else {
-                    // 小アイテム2つを左に縦に並べる
-                    for i in 0..<2 {
-                        items.append(RelativeLayoutItem(x: 0, y: currentY + CGFloat(i), width: 1, height: 1))
+                case let .mediumWithTwoSmall(mediumOnLeft):
+                    if mediumOnLeft {
+                        // 中アイテム1つを左に配置
+                        items.append(RelativeLayoutItem(x: 0, y: currentY, width: 2, height: 2))
+                        // 小アイテム2つを右に縦に並べる
+                        for i in 0 ..< 2 {
+                            items.append(RelativeLayoutItem(x: 2, y: currentY + CGFloat(i), width: 1, height: 1))
+                        }
+                    } else {
+                        // 小アイテム2つを左に縦に並べる
+                        for i in 0 ..< 2 {
+                            items.append(RelativeLayoutItem(x: 0, y: currentY + CGFloat(i), width: 1, height: 1))
+                        }
+                        // 中アイテム1つを右に配置
+                        items.append(RelativeLayoutItem(x: 1, y: currentY, width: 2, height: 2))
                     }
-                    // 中アイテム1つを右に配置
-                    items.append(RelativeLayoutItem(x: 1, y: currentY, width: 2, height: 2))
-                }
-            case .oneLarge:
-                // 大アイテム1つを配置
-                items.append(RelativeLayoutItem(x: 0, y: currentY, width: 3, height: 3))
+                case .oneLarge:
+                    // 大アイテム1つを配置
+                    items.append(RelativeLayoutItem(x: 0, y: currentY, width: 3, height: 3))
             }
             currentY += layer.unitHeight
         }

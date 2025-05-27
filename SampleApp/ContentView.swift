@@ -4,7 +4,7 @@ import TieredGridLayout
 struct BlockModel: Identifiable {
     var id = UUID()
     let color: Color
-    
+
     init(id: UUID = UUID(), color: Color) {
         self.id = id
         self.color = color
@@ -43,7 +43,7 @@ struct ContentView: View {
         BlockModel(color: .cyan),
         BlockModel(color: .teal),
     ]
-    
+
     // カスタムレイアウトパターン
     private let customLayoutPattern = TGLayoutPattern(layers: [
         .threeSmall,
@@ -59,13 +59,13 @@ struct ContentView: View {
         .threeSmall,
         .oneLarge,
     ])
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
                 Text("デフォルトレイアウト")
                     .font(.headline)
-                
+
                 TieredGridLayout {
                     ForEach(sampleBlockModels) { block in
                         Rectangle()
@@ -73,11 +73,11 @@ struct ContentView: View {
                             .border(Color.white, width: 2)
                     }
                 }
-                
+
                 Text("カスタムレイアウト")
                     .font(.headline)
                     .padding(.top)
-                
+
                 TieredGridLayout(layoutPattern: customLayoutPattern) {
                     ForEach(sampleBlockModels) { block in
                         Rectangle()

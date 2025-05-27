@@ -1,5 +1,5 @@
-import XCTest
 import TieredGridLayout
+import XCTest
 
 final class LayoutPositionTests: XCTestCase {
     var app: XCUIApplication!
@@ -54,61 +54,69 @@ final class LayoutPositionTests: XCTestCase {
     func verifyLayerItems(layer: TGLayer, frames: [CGRect], startIndex: Int, currentY: CGFloat) -> Int {
         var itemIndex = startIndex
         switch layer {
-        case .threeSmall:
-            // 3つの小アイテムを横に配置
-            for x in 0..<3 {
+            case .threeSmall:
+                // 3つの小アイテムを横に配置
+                for x in 0 ..< 3 {
+                    let frame = frames[itemIndex]
+                    XCTAssertEqual(frame.minX, containerX + CGFloat(x) * unitWidth, accuracy: tolerance)
+                    XCTAssertEqual(frame.minY, containerY + currentY * unitWidth, accuracy: tolerance)
+                    XCTAssertEqual(frame.width, unitWidth, accuracy: tolerance)
+                    XCTAssertEqual(frame.height, unitWidth, accuracy: tolerance)
+                    itemIndex += 1
+                }
+            case let .mediumWithTwoSmall(mediumOnLeft):
+                if mediumOnLeft {
+                    // 中アイテム（左）と2つの小アイテム（右）
+                    let mediumFrame = frames[itemIndex]
+                    XCTAssertEqual(mediumFrame.minX, containerX, accuracy: tolerance)
+                    XCTAssertEqual(mediumFrame.minY, containerY + currentY * unitWidth, accuracy: tolerance)
+                    XCTAssertEqual(mediumFrame.width, unitWidth * 2, accuracy: tolerance)
+                    XCTAssertEqual(mediumFrame.height, unitWidth * 2, accuracy: tolerance)
+                    itemIndex += 1
+
+                    // 2つの小アイテム
+                    for y in 0 ..< 2 {
+                        let frame = frames[itemIndex]
+                        XCTAssertEqual(frame.minX, containerX + unitWidth * 2, accuracy: tolerance)
+                        XCTAssertEqual(
+                            frame.minY,
+                            containerY + (currentY + CGFloat(y)) * unitWidth,
+                            accuracy: tolerance
+                        )
+                        XCTAssertEqual(frame.width, unitWidth, accuracy: tolerance)
+                        XCTAssertEqual(frame.height, unitWidth, accuracy: tolerance)
+                        itemIndex += 1
+                    }
+                } else {
+                    // 2つの小アイテム（左）と中アイテム（右）
+                    for y in 0 ..< 2 {
+                        let frame = frames[itemIndex]
+                        XCTAssertEqual(frame.minX, containerX, accuracy: tolerance)
+                        XCTAssertEqual(
+                            frame.minY,
+                            containerY + (currentY + CGFloat(y)) * unitWidth,
+                            accuracy: tolerance
+                        )
+                        XCTAssertEqual(frame.width, unitWidth, accuracy: tolerance)
+                        XCTAssertEqual(frame.height, unitWidth, accuracy: tolerance)
+                        itemIndex += 1
+                    }
+
+                    let mediumFrame = frames[itemIndex]
+                    XCTAssertEqual(mediumFrame.minX, containerX + unitWidth, accuracy: tolerance)
+                    XCTAssertEqual(mediumFrame.minY, containerY + currentY * unitWidth, accuracy: tolerance)
+                    XCTAssertEqual(mediumFrame.width, unitWidth * 2, accuracy: tolerance)
+                    XCTAssertEqual(mediumFrame.height, unitWidth * 2, accuracy: tolerance)
+                    itemIndex += 1
+                }
+            case .oneLarge:
+                // 1つの大アイテム
                 let frame = frames[itemIndex]
-                XCTAssertEqual(frame.minX, containerX + CGFloat(x) * unitWidth, accuracy: tolerance)
+                XCTAssertEqual(frame.minX, containerX, accuracy: tolerance)
                 XCTAssertEqual(frame.minY, containerY + currentY * unitWidth, accuracy: tolerance)
-                XCTAssertEqual(frame.width, unitWidth, accuracy: tolerance)
-                XCTAssertEqual(frame.height, unitWidth, accuracy: tolerance)
+                XCTAssertEqual(frame.width, unitWidth * 3, accuracy: tolerance)
+                XCTAssertEqual(frame.height, unitWidth * 3, accuracy: tolerance)
                 itemIndex += 1
-            }
-        case .mediumWithTwoSmall(let mediumOnLeft):
-            if mediumOnLeft {
-                // 中アイテム（左）と2つの小アイテム（右）
-                let mediumFrame = frames[itemIndex]
-                XCTAssertEqual(mediumFrame.minX, containerX, accuracy: tolerance)
-                XCTAssertEqual(mediumFrame.minY, containerY + currentY * unitWidth, accuracy: tolerance)
-                XCTAssertEqual(mediumFrame.width, unitWidth * 2, accuracy: tolerance)
-                XCTAssertEqual(mediumFrame.height, unitWidth * 2, accuracy: tolerance)
-                itemIndex += 1
-
-                // 2つの小アイテム
-                for y in 0..<2 {
-                    let frame = frames[itemIndex]
-                    XCTAssertEqual(frame.minX, containerX + unitWidth * 2, accuracy: tolerance)
-                    XCTAssertEqual(frame.minY, containerY + (currentY + CGFloat(y)) * unitWidth, accuracy: tolerance)
-                    XCTAssertEqual(frame.width, unitWidth, accuracy: tolerance)
-                    XCTAssertEqual(frame.height, unitWidth, accuracy: tolerance)
-                    itemIndex += 1
-                }
-            } else {
-                // 2つの小アイテム（左）と中アイテム（右）
-                for y in 0..<2 {
-                    let frame = frames[itemIndex]
-                    XCTAssertEqual(frame.minX, containerX, accuracy: tolerance)
-                    XCTAssertEqual(frame.minY, containerY + (currentY + CGFloat(y)) * unitWidth, accuracy: tolerance)
-                    XCTAssertEqual(frame.width, unitWidth, accuracy: tolerance)
-                    XCTAssertEqual(frame.height, unitWidth, accuracy: tolerance)
-                    itemIndex += 1
-                }
-
-                let mediumFrame = frames[itemIndex]
-                XCTAssertEqual(mediumFrame.minX, containerX + unitWidth, accuracy: tolerance)
-                XCTAssertEqual(mediumFrame.minY, containerY + currentY * unitWidth, accuracy: tolerance)
-                XCTAssertEqual(mediumFrame.width, unitWidth * 2, accuracy: tolerance)
-                XCTAssertEqual(mediumFrame.height, unitWidth * 2, accuracy: tolerance)
-                itemIndex += 1
-            }
-        case .oneLarge:
-            // 1つの大アイテム
-            let frame = frames[itemIndex]
-            XCTAssertEqual(frame.minX, containerX, accuracy: tolerance)
-            XCTAssertEqual(frame.minY, containerY + currentY * unitWidth, accuracy: tolerance)
-            XCTAssertEqual(frame.width, unitWidth * 3, accuracy: tolerance)
-            XCTAssertEqual(frame.height, unitWidth * 3, accuracy: tolerance)
-            itemIndex += 1
         }
         return itemIndex
     }
@@ -182,7 +190,7 @@ final class LayoutPositionTests: XCTestCase {
         var itemIndex = 0
 
         // 10パターン分のレイアウトを検証
-        for patternIndex in 0..<10 {
+        for patternIndex in 0 ..< 10 {
             // 各レイヤーのアイテムを検証
             for layer in pattern.layers {
                 itemIndex = verifyLayerItems(layer: layer, frames: frames, startIndex: itemIndex, currentY: currentY)
@@ -192,26 +200,51 @@ final class LayoutPositionTests: XCTestCase {
             // パターン間の間隔が正しいことを確認
             if patternIndex < 9 { // 最後のパターン以外
                 let nextPatternStartY = currentY
-                let currentPatternEndY = currentY - pattern.layers.last!.unitHeight
-                XCTAssertEqual(nextPatternStartY - currentPatternEndY, 0, accuracy: tolerance,
-                             "パターン \(patternIndex) と \(patternIndex + 1) の間の間隔が正しい")
+                guard let lastLayer = pattern.layers.last else {
+                    XCTFail("レイヤーが存在しません")
+                    return
+                }
+                let currentPatternEndY = currentY - lastLayer.unitHeight
+                XCTAssertEqual(
+                    nextPatternStartY - currentPatternEndY,
+                    0,
+                    accuracy: tolerance,
+                    "パターン \(patternIndex) と \(patternIndex + 1) の間の間隔が正しい"
+                )
             }
         }
 
         // スクロールが可能であることを確認
-        let initialContentOffset = gridContainer.value(forKey: "contentOffset") as! CGPoint
+        guard let initialContentOffset = gridContainer.value(forKey: "contentOffset") as? CGPoint else {
+            XCTFail("contentOffsetの取得に失敗しました")
+            return
+        }
         gridContainer.swipeUp()
-        let scrolledContentOffset = gridContainer.value(forKey: "contentOffset") as! CGPoint
-        XCTAssertGreaterThan(scrolledContentOffset.y, initialContentOffset.y,
-                           "コンテナがスクロール可能である")
+        guard let scrolledContentOffset = gridContainer.value(forKey: "contentOffset") as? CGPoint else {
+            XCTFail("スクロール後のcontentOffsetの取得に失敗しました")
+            return
+        }
+        XCTAssertGreaterThan(
+            scrolledContentOffset.y,
+            initialContentOffset.y,
+            "コンテナがスクロール可能である"
+        )
 
         // スクロール後もレイアウトが維持されていることを確認
         let scrolledFrames = verifyAndGetItemFrames(count: 100)
-        for i in 0..<frames.count {
-            XCTAssertEqual(frames[i].width, scrolledFrames[i].width, accuracy: tolerance,
-                         "スクロール後もアイテム \(i) の幅が維持されている")
-            XCTAssertEqual(frames[i].height, scrolledFrames[i].height, accuracy: tolerance,
-                         "スクロール後もアイテム \(i) の高さが維持されている")
+        for i in 0 ..< frames.count {
+            XCTAssertEqual(
+                frames[i].width,
+                scrolledFrames[i].width,
+                accuracy: tolerance,
+                "スクロール後もアイテム \(i) の幅が維持されている"
+            )
+            XCTAssertEqual(
+                frames[i].height,
+                scrolledFrames[i].height,
+                accuracy: tolerance,
+                "スクロール後もアイテム \(i) の高さが維持されている"
+            )
         }
     }
 }

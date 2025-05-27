@@ -16,9 +16,9 @@ final class UnitPointTests: XCTestCase {
     }
 
     func testDefaultAlignment() {
-        // TieredGridLayout のデフォルト alignment が .center であることを確認
+        // TieredGridLayout のデフォルト itemAlignmentInElement が .center であることを確認
         let defaultLayout = TieredGridLayout()
-        XCTAssertEqual(defaultLayout.alignment, .center, "TieredGridLayout のデフォルト alignment は .center であるべき")
+        XCTAssertEqual(defaultLayout.itemAlignmentInElement, .center, "TieredGridLayout のデフォルト itemAlignmentInElement は .center であるべき")
     }
 
     func testUnhandledAlignment() {

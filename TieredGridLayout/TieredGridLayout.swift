@@ -17,12 +17,12 @@ public struct TieredGridLayout: Layout {
         CacheData()
     }
 
-    let alignment: Alignment
+    let itemAlignmentInElement: Alignment
     let pattern: TGLayoutPattern
 
     @available(iOS 16.0, macOS 13.0, *)
     public init(alignment: Alignment = .center, pattern: TGLayoutPattern = .default) {
-        self.alignment = alignment
+        self.itemAlignmentInElement = alignment
         self.pattern = pattern
     }
 
@@ -156,7 +156,7 @@ public struct TieredGridLayout: Layout {
             // ここでは高さの再計算は行いません。
         }
 
-        let anchor: UnitPoint = unitPoint(for: alignment)
+        let anchor: UnitPoint = unitPoint(for: itemAlignmentInElement)
 
         for (index, subview) in subviews.enumerated() where index < positionsToUse.count {
             let (pt, size): (CGPoint, CGSize) = positionsToUse[index]

@@ -107,14 +107,14 @@ mint run xcodegen
 
 ## カスタマイズ
 
-### Alignment
+### itemAlignmentInElement
 
-初期化時に `alignment` パラメータを使用して、レイアウト内の各アイテムの配置位置を決定できます。このパラメータは、標準の SwiftUI `Alignment` 値（例：`.center`、`.topLeading`、`.bottomTrailing`）を受け入れます。
+初期化時に `itemAlignmentInElement` パラメータを使用して、レイアウト内の各要素におけるアイテムの配置位置を決定できます。このパラメータは、標準の SwiftUI `Alignment` 値（例：`.center`、`.topLeading`、`.bottomTrailing`）を受け入れます。
 
 ```swift
 struct ContentView: View {
     var body: some View {
-        TieredGridLayout(alignment: .center) {
+        TieredGridLayout(itemAlignmentInElement: .center) {
             ForEach(0..<10) { index in
                 Color.blue
                     .overlay(Text("\(index)"))
@@ -124,7 +124,7 @@ struct ContentView: View {
 }
 ```
 
-デフォルトの配置は `.center` です。
+デフォルトの配置は `.center` です。このパラメータは各要素内でのアイテムの配置位置を制御します。
 
 ## テスト
 

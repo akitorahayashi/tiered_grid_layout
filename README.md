@@ -4,15 +4,13 @@
 
 `SampleApp` は `TieredGridLayout` ライブラリの使用方法を示すサンプルアプリケーションです
 
-<a href="https://deepwiki.com/atrh95/tiered-grid-layout"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
-
 ## 特徴
 
 - 単一サイズの小ブロック(1x1)、中ブロック(2x2)、大ブロック(3x3)を組み合わせたレイアウト
 - ブロック数に応じた動的なレイアウト調整
 - レイアウト計算結果をキャッシュし、再描画時のパフォーマンスを向上
 
-## 対応OS
+## 必要条件
 
 - iOS 16.0+
 - macOS 13.0+
@@ -111,7 +109,7 @@ mint run xcodegen
 
 ### Alignment
 
-初期化時に `alignment` パラメータを使用して、グリッドセル内のビューの配置を指定できます。このパラメータは、標準の SwiftUI `Alignment` 値（例：`.center`、`.topLeading`、`.bottomTrailing`）を受け入れます。
+初期化時に `alignment` パラメータを使用して、レイアウト内の各アイテムの配置位置を決定できます。このパラメータは、標準の SwiftUI `Alignment` 値（例：`.center`、`.topLeading`、`.bottomTrailing`）を受け入れます。
 
 ```swift
 struct ContentView: View {

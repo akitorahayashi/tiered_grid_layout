@@ -3,15 +3,13 @@ import SwiftUI
 import XCTest
 
 final class GeneratePositionsTests: XCTestCase {
-    // TieredGridLayoutの定義から
     private let setHeightInUnits: CGFloat = 7
 
     var layout: TieredGridLayout!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        // generatePositions の予測可能性のため、alignment を固定
-        layout = TieredGridLayout(alignment: .topLeading)
+        layout = TieredGridLayout()
     }
 
     override func tearDownWithError() throws {

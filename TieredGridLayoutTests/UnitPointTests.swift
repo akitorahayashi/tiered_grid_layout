@@ -7,7 +7,6 @@ final class UnitPointTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        // TieredGridLayout のデフォルト alignment (.center) を使用してテスト
         layout = TieredGridLayout()
     }
 
@@ -16,10 +15,17 @@ final class UnitPointTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func testDefaultAlignment_isCenter() {
+    func testDefaultAlignment() {
         // TieredGridLayout のデフォルト alignment が .center であることを確認
         let defaultLayout = TieredGridLayout()
         XCTAssertEqual(defaultLayout.alignment, .center, "TieredGridLayout のデフォルト alignment は .center であるべき")
+    }
+
+    func testUnhandledAlignment() {
+        // 未対応の alignment の場合も .center を返すことを確認
+        let defaultLayout = TieredGridLayout()
+        let unhandledAlignmentResult = defaultLayout.unitPoint(for: .leadingLastTextBaseline)
+        XCTAssertEqual(unhandledAlignmentResult, .center, "未処理の alignment の場合も .center を返すことを確認")
     }
 
     func testUnitPointMapping() {
@@ -43,10 +49,5 @@ final class UnitPointTests: XCTestCase {
                 "Alignment \(alignment) は \(expectedUnitPoint) にマップされることを確認 (実際の結果: \(result))"
             )
         }
-
-        // デフォルトケースを確認
-        let defaultCaseResult = layout
-            .unitPoint(for: .leadingLastTextBaseline) // 明示的に処理されない alignment を使用
-        XCTAssertEqual(defaultCaseResult, .center, "Alignment のデフォルトケースは .center を返すことを確認")
     }
 }

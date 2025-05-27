@@ -126,6 +126,45 @@ struct ContentView: View {
 
 デフォルトの配置は `.center` です。このパラメータは各要素内でのアイテムの配置位置を制御します。
 
+### layoutPattern
+
+`layoutPattern` パラメータを使用して、レイアウトのパターンをカスタマイズできます。デフォルトでは以下のパターンが使用されます：
+
+```swift
+TGLayoutPattern(layers: [
+    .threeSmall,                    // 上段：小アイテム3つ
+    .mediumWithTwoSmall(mediumOnLeft: true), // 中段：中アイテム1つ + 小アイテム2つ
+    .threeSmall,                    // 下段：小アイテム3つ
+    .oneLarge                       // 最下段：大アイテム1つ
+])
+```
+
+カスタムパターンを作成する例：
+
+```swift
+struct ContentView: View {
+    var body: some View {
+        let customPattern = TGLayoutPattern(layers: [
+            .threeSmall,
+            .mediumWithTwoSmall(mediumOnLeft: false), // 中アイテムを右側に配置
+            .oneLarge
+        ])
+        
+        TieredGridLayout(layoutPattern: customPattern) {
+            ForEach(0..<10) { index in
+                Color.blue
+                    .overlay(Text("\(index)"))
+            }
+        }
+    }
+}
+```
+
+利用可能なレイヤータイプ：
+- `.threeSmall`: 横に3つの小ブロック(1x1)を配置
+- `.mediumWithTwoSmall(mediumOnLeft: Bool)`: 中ブロック(2x2)と小ブロック(1x1)2つを配置（中ブロックの位置を指定可能）
+- `.oneLarge`: 大ブロック(3x3)1つを配置
+
 ## テスト
 
 ### ユニットテスト

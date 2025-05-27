@@ -15,7 +15,7 @@ final class GeneratePositionsTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        layout = TieredGridLayout(pattern: defaultPattern)
+        layout = TieredGridLayout(layoutPattern: defaultPattern)
     }
 
     override func tearDownWithError() throws {
@@ -27,7 +27,7 @@ final class GeneratePositionsTests: XCTestCase {
 
     func testThreeSmallLayerPositions() {
         let pattern = TGLayoutPattern(layers: [.threeSmall])
-        layout = TieredGridLayout(pattern: pattern)
+        layout = TieredGridLayout(layoutPattern: pattern)
         
         let width: CGFloat = 300
         let unit = width / 3
@@ -45,7 +45,7 @@ final class GeneratePositionsTests: XCTestCase {
 
     func testMediumWithTwoSmallLayerPositions_MediumOnLeft() {
         let pattern = TGLayoutPattern(layers: [.mediumWithTwoSmall(mediumOnLeft: true)])
-        layout = TieredGridLayout(pattern: pattern)
+        layout = TieredGridLayout(layoutPattern: pattern)
         
         let width: CGFloat = 300
         let unit = width / 3
@@ -67,7 +67,7 @@ final class GeneratePositionsTests: XCTestCase {
 
     func testMediumWithTwoSmallLayerPositions_MediumOnRight() {
         let pattern = TGLayoutPattern(layers: [.mediumWithTwoSmall(mediumOnLeft: false)])
-        layout = TieredGridLayout(pattern: pattern)
+        layout = TieredGridLayout(layoutPattern: pattern)
         
         let width: CGFloat = 300
         let unit = width / 3
@@ -89,7 +89,7 @@ final class GeneratePositionsTests: XCTestCase {
 
     func testOneLargeLayerPositions() {
         let pattern = TGLayoutPattern(layers: [.oneLarge])
-        layout = TieredGridLayout(pattern: pattern)
+        layout = TieredGridLayout(layoutPattern: pattern)
         
         let width: CGFloat = 300
         let unit = width / 3

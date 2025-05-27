@@ -18,12 +18,12 @@ public struct TieredGridLayout: Layout {
     }
 
     let itemAlignmentInElement: Alignment
-    let pattern: TGLayoutPattern
+    let layoutPattern: TGLayoutPattern
 
     @available(iOS 16.0, macOS 13.0, *)
-    public init(alignment: Alignment = .center, pattern: TGLayoutPattern = TGLayoutPattern()) {
+    public init(alignment: Alignment = .center, layoutPattern: TGLayoutPattern = TGLayoutPattern()) {
         self.itemAlignmentInElement = alignment
-        self.pattern = pattern
+        self.layoutPattern = layoutPattern
     }
 
     // MARK: - レイアウトパターン
@@ -35,11 +35,11 @@ public struct TieredGridLayout: Layout {
         let height: CGFloat // ユニット単位の高さ
     }
 
-    private func generateLayoutPattern() -> [RelativeLayoutItem] {
+    private func generateRelativeLayoutItems() -> [RelativeLayoutItem] {
         var items: [RelativeLayoutItem] = []
         var currentY: CGFloat = 0
 
-        for layer in pattern.layers {
+        for layer in layoutPattern.layers {
             switch layer {
             case .threeSmall:
                 // 小アイテム3つを横に並べる
@@ -72,12 +72,12 @@ public struct TieredGridLayout: Layout {
         return items
     }
 
-    private var layoutPattern: [RelativeLayoutItem] {
-        generateLayoutPattern()
+    private var relativeLayoutItems: [RelativeLayoutItem] {
+        generateRelativeLayoutItems()
     }
 
     private var setHeightInUnits: CGFloat {
-        pattern.layers.reduce(0) { $0 + $1.unitHeight }
+        layoutPattern.layers.reduce(0) { $0 + $1.unitHeight }
     }
 
     // コンテナの全高を計算
@@ -101,13 +101,13 @@ public struct TieredGridLayout: Layout {
         }
 
         let unit: CGFloat = width / 3
-        let setSize = layoutPattern.count
+        let setSize = relativeLayoutItems.count
         let completeSets: Int = count / setSize
         let remainingItems: Int = count % setSize
         var height = CGFloat(completeSets) * unit * setHeightInUnits
 
         if remainingItems > 0 {
-            let maxRelativeYPlusHeight = layoutPattern[..<remainingItems]
+            let maxRelativeYPlusHeight = relativeLayoutItems[..<remainingItems]
                 .map { $0.y + $0.height }
                 .max() ?? 0
             height += maxRelativeYPlusHeight * unit
@@ -202,7 +202,7 @@ public struct TieredGridLayout: Layout {
         guard numberOfItems > 0, width > 0 else { return positions }
 
         let unit: CGFloat = width / 3
-        let pattern = layoutPattern
+        let pattern = relativeLayoutItems
         let setSize = pattern.count
         positions.reserveCapacity(numberOfItems)
 

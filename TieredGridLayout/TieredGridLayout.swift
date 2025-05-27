@@ -21,7 +21,7 @@ public struct TieredGridLayout: Layout {
     let pattern: TGLayoutPattern
 
     @available(iOS 16.0, macOS 13.0, *)
-    public init(alignment: Alignment = .center, pattern: TGLayoutPattern = .default) {
+    public init(alignment: Alignment = .center, pattern: TGLayoutPattern = TGLayoutPattern()) {
         self.itemAlignmentInElement = alignment
         self.pattern = pattern
     }
@@ -40,7 +40,7 @@ public struct TieredGridLayout: Layout {
         var currentY: CGFloat = 0
 
         for layer in pattern.layers {
-            switch layer.type {
+            switch layer {
             case .threeSmall:
                 // 小アイテム3つを横に並べる
                 for i in 0..<3 {

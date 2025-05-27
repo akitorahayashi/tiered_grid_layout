@@ -4,12 +4,18 @@ import XCTest
 
 final class GeneratePositionsTests: XCTestCase {
     private let setHeightInUnits: CGFloat = 7
+    private let defaultPattern = TGLayoutPattern(layers: [
+        .threeSmall,
+        .mediumWithTwoSmall(mediumOnLeft: true),
+        .threeSmall,
+        .oneLarge
+    ])
 
     var layout: TieredGridLayout!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        layout = TieredGridLayout()
+        layout = TieredGridLayout(pattern: defaultPattern)
     }
 
     override func tearDownWithError() throws {
@@ -17,82 +23,130 @@ final class GeneratePositionsTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    // MARK: - generatePositions Tests
+    // MARK: - Layer Type Tests
 
-    func testGeneratePositions_withZeroCount() {
-        let positions = layout.generatePositions(numberOfItems: 0, width: 300)
-        XCTAssertTrue(positions.isEmpty, "要素数が0の場合、positionsは空であることを確認")
+    func testThreeSmallLayerPositions() {
+        let pattern = TGLayoutPattern(layers: [.threeSmall])
+        layout = TieredGridLayout(pattern: pattern)
+        
+        let width: CGFloat = 300
+        let unit = width / 3
+        let positions = layout.generatePositions(numberOfItems: 3, width: width)
+        
+        XCTAssertEqual(positions.count, 3)
+        guard positions.count == 3 else { return }
+        
+        // 3つの小アイテムが横に並ぶことを確認
+        for i in 0..<3 {
+            XCTAssertEqual(positions[i].0, CGPoint(x: CGFloat(i) * unit, y: 0 * unit))
+            XCTAssertEqual(positions[i].1, CGSize(width: 1 * unit, height: 1 * unit))
+        }
     }
 
-    func testGeneratePositions_withZeroWidth() {
-        let positions = layout.generatePositions(numberOfItems: 5, width: 0)
-        XCTAssertTrue(positions.isEmpty, "幅が0の場合、positionsは空であることを確認")
+    func testMediumWithTwoSmallLayerPositions_MediumOnLeft() {
+        let pattern = TGLayoutPattern(layers: [.mediumWithTwoSmall(mediumOnLeft: true)])
+        layout = TieredGridLayout(pattern: pattern)
+        
+        let width: CGFloat = 300
+        let unit = width / 3
+        let positions = layout.generatePositions(numberOfItems: 3, width: width)
+        
+        XCTAssertEqual(positions.count, 3)
+        guard positions.count == 3 else { return }
+        
+        // 中アイテムが左に配置
+        XCTAssertEqual(positions[0].0, CGPoint(x: 0 * unit, y: 0 * unit))
+        XCTAssertEqual(positions[0].1, CGSize(width: 2 * unit, height: 2 * unit))
+        
+        // 小アイテム2つが右に縦に並ぶ
+        XCTAssertEqual(positions[1].0, CGPoint(x: 2 * unit, y: 0 * unit))
+        XCTAssertEqual(positions[1].1, CGSize(width: 1 * unit, height: 1 * unit))
+        XCTAssertEqual(positions[2].0, CGPoint(x: 2 * unit, y: 1 * unit))
+        XCTAssertEqual(positions[2].1, CGSize(width: 1 * unit, height: 1 * unit))
     }
 
-    func testGeneratePositions_singleItem() {
+    func testMediumWithTwoSmallLayerPositions_MediumOnRight() {
+        let pattern = TGLayoutPattern(layers: [.mediumWithTwoSmall(mediumOnLeft: false)])
+        layout = TieredGridLayout(pattern: pattern)
+        
+        let width: CGFloat = 300
+        let unit = width / 3
+        let positions = layout.generatePositions(numberOfItems: 3, width: width)
+        
+        XCTAssertEqual(positions.count, 3)
+        guard positions.count == 3 else { return }
+        
+        // 小アイテム2つが左に縦に並ぶ
+        XCTAssertEqual(positions[0].0, CGPoint(x: 0 * unit, y: 0 * unit))
+        XCTAssertEqual(positions[0].1, CGSize(width: 1 * unit, height: 1 * unit))
+        XCTAssertEqual(positions[1].0, CGPoint(x: 0 * unit, y: 1 * unit))
+        XCTAssertEqual(positions[1].1, CGSize(width: 1 * unit, height: 1 * unit))
+        
+        // 中アイテムが右に配置
+        XCTAssertEqual(positions[2].0, CGPoint(x: 1 * unit, y: 0 * unit))
+        XCTAssertEqual(positions[2].1, CGSize(width: 2 * unit, height: 2 * unit))
+    }
+
+    func testOneLargeLayerPositions() {
+        let pattern = TGLayoutPattern(layers: [.oneLarge])
+        layout = TieredGridLayout(pattern: pattern)
+        
         let width: CGFloat = 300
         let unit = width / 3
         let positions = layout.generatePositions(numberOfItems: 1, width: width)
-
+        
         XCTAssertEqual(positions.count, 1)
         guard positions.count == 1 else { return }
-
-        // アイテム 0: x=0, y=0, 幅=1, 高さ=1
+        
+        // 大アイテムが配置
         XCTAssertEqual(positions[0].0, CGPoint(x: 0 * unit, y: 0 * unit))
-        XCTAssertEqual(positions[0].1, CGSize(width: 1 * unit, height: 1 * unit))
+        XCTAssertEqual(positions[0].1, CGSize(width: 3 * unit, height: 3 * unit))
     }
 
-    func testGeneratePositions_multipleItems_lessThanOneSet() {
-        let width: CGFloat = 300
-        let unit = width / 3
-        let positions = layout.generatePositions(numberOfItems: 4, width: width)
+    // MARK: - Multiple Layer Tests
 
-        XCTAssertEqual(positions.count, 4)
-        guard positions.count == 4 else { return }
-
-        // アイテム 0
-        XCTAssertEqual(positions[0].0, CGPoint(x: 0 * unit, y: 0 * unit))
-        XCTAssertEqual(positions[0].1, CGSize(width: 1 * unit, height: 1 * unit))
-        // アイテム 1
-        XCTAssertEqual(positions[1].0, CGPoint(x: 1 * unit, y: 0 * unit))
-        XCTAssertEqual(positions[1].1, CGSize(width: 1 * unit, height: 1 * unit))
-        // アイテム 2
-        XCTAssertEqual(positions[2].0, CGPoint(x: 2 * unit, y: 0 * unit))
-        XCTAssertEqual(positions[2].1, CGSize(width: 1 * unit, height: 1 * unit))
-        // アイテム 3
-        XCTAssertEqual(positions[3].0, CGPoint(x: 0 * unit, y: 1 * unit))
-        XCTAssertEqual(positions[3].1, CGSize(width: 2 * unit, height: 2 * unit))
-    }
-
-    func testGeneratePositions_oneFullSet() {
+    func testMultipleLayersWithDefaultPattern() {
         let width: CGFloat = 300
         let unit = width / 3
         let positions = layout.generatePositions(numberOfItems: 10, width: width)
-
+        
         XCTAssertEqual(positions.count, 10)
         guard positions.count == 10 else { return }
-
-        // 最後のアイテムを確認 (アイテム 9)
+        
+        // 最初の層: 3つの小アイテム
+        for i in 0..<3 {
+            XCTAssertEqual(positions[i].0, CGPoint(x: CGFloat(i) * unit, y: 0 * unit))
+            XCTAssertEqual(positions[i].1, CGSize(width: 1 * unit, height: 1 * unit))
+        }
+        
+        // 2番目の層: 中アイテム + 2つの小アイテム
+        XCTAssertEqual(positions[3].0, CGPoint(x: 0 * unit, y: 1 * unit))
+        XCTAssertEqual(positions[3].1, CGSize(width: 2 * unit, height: 2 * unit))
+        XCTAssertEqual(positions[4].0, CGPoint(x: 2 * unit, y: 1 * unit))
+        XCTAssertEqual(positions[4].1, CGSize(width: 1 * unit, height: 1 * unit))
+        XCTAssertEqual(positions[5].0, CGPoint(x: 2 * unit, y: 2 * unit))
+        XCTAssertEqual(positions[5].1, CGSize(width: 1 * unit, height: 1 * unit))
+        
+        // 3番目の層: 3つの小アイテム
+        for i in 6..<9 {
+            XCTAssertEqual(positions[i].0, CGPoint(x: CGFloat(i - 6) * unit, y: 3 * unit))
+            XCTAssertEqual(positions[i].1, CGSize(width: 1 * unit, height: 1 * unit))
+        }
+        
+        // 4番目の層: 大アイテム
         XCTAssertEqual(positions[9].0, CGPoint(x: 0 * unit, y: 4 * unit))
         XCTAssertEqual(positions[9].1, CGSize(width: 3 * unit, height: 3 * unit))
     }
 
-    func testGeneratePositions_moreThanOneSet() {
-        let width: CGFloat = 300
-        let unit = width / 3
-        let setHeight = setHeightInUnits * unit
-        let positions = layout.generatePositions(numberOfItems: 11, width: width) // 1フルセット + 1アイテム
+    // MARK: - Edge Case Tests
 
-        XCTAssertEqual(positions.count, 11)
-        guard positions.count == 11 else { return }
+    func testEmptyPositionsWhenItemCountIsZero() {
+        let positions = layout.generatePositions(numberOfItems: 0, width: 300)
+        XCTAssertTrue(positions.isEmpty, "要素数が0の場合、positionsは空であることを確認")
+    }
 
-        // 2番目のセットの最初のアイテムを確認 (アイテム 10, パターンアイテム 0)
-        XCTAssertEqual(positions[10].0, CGPoint(x: 0 * unit, y: 0 * unit + setHeight))
-        XCTAssertEqual(positions[10].1, CGSize(width: 1 * unit, height: 1 * unit))
-
-        // 2番目のセットの別のアイテムを確認 (アイテム 13, パターンアイテム 3)
-        let positions13 = layout.generatePositions(numberOfItems: 14, width: width) // 1フルセット + 4アイテム
-        XCTAssertEqual(positions13[13].0, CGPoint(x: 0 * unit, y: 1 * unit + setHeight))
-        XCTAssertEqual(positions13[13].1, CGSize(width: 2 * unit, height: 2 * unit))
+    func testEmptyPositionsWhenWidthIsZero() {
+        let positions = layout.generatePositions(numberOfItems: 5, width: 0)
+        XCTAssertTrue(positions.isEmpty, "幅が0の場合、positionsは空であることを確認")
     }
 }

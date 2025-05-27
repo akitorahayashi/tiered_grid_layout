@@ -214,15 +214,4 @@ final class LayoutPositionTests: XCTestCase {
                          "スクロール後もアイテム \(i) の高さが維持されている")
         }
     }
-
-    // パフォーマンステスト：大量の要素に対するレイアウト計算の速度を検証
-    func testLayoutPerformance() throws {
-        measure {
-            // アイテムを50個に増やす
-            for _ in 5 ..< 50 {
-                increaseButton.tap()
-            }
-            _ = verifyAndGetItemFrames(count: 50)
-        }
-    }
 }

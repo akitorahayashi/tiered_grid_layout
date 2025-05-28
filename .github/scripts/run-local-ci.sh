@@ -1,4 +1,11 @@
 #!/bin/bash
+#  $ ./.github/scripts/run-local-ci.sh                    # 全ステップ実行 (packageテスト、UIテスト、アーカイブ)
+#  $ ./.github/scripts/run-local-ci.sh --package-test     # Swift Packageテストのみ実行
+#  $ ./.github/scripts/run-local-ci.sh --ui-test          # UIテストのみ実行
+#  $ ./.github/scripts/run-local-ci.sh --archive-only     # アーカイブビルドのみ実行
+#  $ ./.github/scripts/run-local-ci.sh --all-tests        # packageテストとUIテストを実行 (アーカイブなし)
+#  $ ./.github/scripts/run-local-ci.sh --test-without-building --ui-test  # ビルドなしでUIテストを実行 (既存のビルド成果物を再利用)
+
 set -euo pipefail
 
 # === 設定 ===

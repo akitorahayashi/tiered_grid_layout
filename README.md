@@ -1,4 +1,4 @@
-# TieredGridLayout
+## 概要
 
 `TieredGridLayout` は、SwiftUIの`Layout`プロトコルを使用して実装されたカスタムレイアウトコンポーネントです
 
@@ -38,7 +38,7 @@ TieredGridLayoutはSwiftUIの`Layout`プロトコルを実装しています。�
 ### Swift Package Manager
 
 1. Xcode でプロジェクトを開き、「File」>「Add Packages...」を選択します
-2. 検索バーにこのリポジトリの URL (`https://github.com/akitorahayashi/tiered-grid-layout` ) を貼り付けます
+2. 検索バーにこのリポジトリの URL (`https://github.com/atrh95/tiered-grid-layout` ) を貼り付けます
 3. 「Dependency Rule」を選択し（通常は「Up to Next Major Version」）、バージョンを指定します。
 4. 「Add Package」をクリックします。
 5. ターゲットの「Frameworks, Libraries, and Embedded Content」セクションに `TieredGridLayout` が追加されていることを確認します。
@@ -47,13 +47,12 @@ TieredGridLayoutはSwiftUIの`Layout`プロトコルを実装しています。�
 import SwiftUI
 import TieredGridLayout
 
-// VStackやHStackのようにTieredGridLayoutを使用して子ビューを配置します
+// VStackやHStackのようにTieredGridLayoutを使用してサブビューを配置します
 TieredGridLayout {
-    // ここに子ビューを直接追加します
+    // ここにサブビューを直接追加します
     Rectangle().fill(.blue)
     Rectangle().fill(.red)
     Rectangle().fill(.green)
-    // さらにビューを追加...
 }
 ```
 
